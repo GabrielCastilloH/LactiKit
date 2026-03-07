@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { Message, ChatPhase, TestResult } from '../types';
 import { streamChatCompletion } from '../lib/gemini';
 import { buildSystemPrompt } from '../lib/testPrompt';
@@ -28,8 +28,7 @@ function buildInitialMessage(test: TestResult | null): Message {
 }
 
 export function useChat(testContext: TestResult | null = null) {
-  const initialMessage = buildInitialMessage(testContext);
-  const [messages, setMessages] = useState<Message[]>([initialMessage]);
+  const [messages, setMessages] = useState<Message[]>([buildInitialMessage(testContext)]);
   const [isStreaming, setIsStreaming] = useState(false);
   const [chatPhase, setChatPhase] = useState<ChatPhase>('questioning');
   const [clinicalSummary, setClinicalSummary] = useState<string>('');
@@ -37,13 +36,22 @@ export function useChat(testContext: TestResult | null = null) {
   const assistantTurnCount = useRef(1);
   const systemPrompt = buildSystemPrompt(testContext);
 
-  const clearChat = useCallback(() => {
-    setMessages([initialMessage]);
+  // Reset chat when the test context changes (e.g. navigating to chat from a different test)
+  useEffect(() => {
+    setMessages([buildInitialMessage(testContext)]);
     setChatPhase('questioning');
     setClinicalSummary('');
     setStreamingText('');
     assistantTurnCount.current = 1;
-  }, []);
+  }, [testContext?.id]);
+
+  const clearChat = useCallback(() => {
+    setMessages([buildInitialMessage(testContext)]);
+    setChatPhase('questioning');
+    setClinicalSummary('');
+    setStreamingText('');
+    assistantTurnCount.current = 1;
+  }, [testContext]);
 
   const sendMessage = useCallback(async (userContent: string) => {
     if (isStreaming) return;
@@ -83,7 +91,7 @@ export function useChat(testContext: TestResult | null = null) {
       setMessages(prev => [...prev, assistantMessage]);
       setStreamingText('');
 
-      if (assistantTurnCount.current >= 3) {
+      if (assistantTurnCount.current >= 4) {
         if (fullResponse.includes('CLINICAL_REFERRAL_NEEDED')) {
           const summaryMatch = fullResponse.match(/Clinical Summary:\s*([\s\S]+)/i);
           setClinicalSummary(summaryMatch ? summaryMatch[1].trim() : fullResponse);

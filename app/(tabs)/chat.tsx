@@ -4,6 +4,7 @@ import {
   Text,
   FlatList,
   Keyboard,
+  Linking,
   Platform,
   ScrollView,
   TouchableOpacity,
@@ -127,6 +128,7 @@ export default function ChatScreen() {
             </View>
           )}
           <TouchableOpacity
+            onPress={() => Linking.openURL('https://www.google.com/maps/search/maternal+health+clinic+near+me')}
             style={{ borderWidth: 1.5, borderColor: COLORS.danger, borderRadius: 10, paddingVertical: 10, alignItems: 'center' }}
           >
             <Text style={{ fontWeight: '600', fontSize: 13, color: COLORS.danger }}>Find a Clinic</Text>

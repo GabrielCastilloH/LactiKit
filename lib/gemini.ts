@@ -60,8 +60,12 @@ ${surveyLines}
 
 Write a 3–4 sentence personalized health overview for this user. Be warm, specific to their results and diet, and give one actionable tip. Do not recommend specific medications.`;
 
-  const result = await model.generateContent(prompt);
-  const fullText = result.response.text();
-  onChunk(fullText);
+  const result = await model.generateContentStream(prompt);
+  let fullText = '';
+  for await (const chunk of result.stream) {
+    const chunkText = chunk.text();
+    fullText += chunkText;
+    onChunk(chunkText);
+  }
   return fullText;
 }
