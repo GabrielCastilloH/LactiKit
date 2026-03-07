@@ -93,7 +93,6 @@ export function useChat(testContext: TestResult | null = null) {
         }
       }
     } catch (error) {
-      console.error('Chat error:', error);
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',

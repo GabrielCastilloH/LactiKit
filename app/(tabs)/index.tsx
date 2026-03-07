@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { router } from 'expo-router';
 import { COLORS, TEST_TYPE_LABELS } from '../../lib/constants';
 import { useTestHistory } from '../../context/ScanHistoryContext';
@@ -41,11 +42,12 @@ export default function HomeScreen() {
   const alertText = getAlertText(latestTest);
   const healthScore = getHealthScore(latestTest);
   const hydrationScore = getHydrationScore(latestTest);
+  const tabBarHeight = useBottomTabBarHeight();
 
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.background }}>
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingHorizontal: 16 }} showsVerticalScrollIndicator={false}>
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: tabBarHeight + 16 }} showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={{ paddingTop: 20, paddingBottom: 16 }}>
           <Text style={{ fontSize: 12, color: '#6B7280', marginBottom: 2 }}>Good morning</Text>
