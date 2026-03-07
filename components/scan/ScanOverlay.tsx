@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Dimensions, LayoutChangeEvent } from 'react-native';
 import Animated, {
   useSharedValue,
@@ -22,12 +22,10 @@ export function ScanOverlay() {
     height: screenDims.height,
   });
 
-  const onContainerLayout = useCallback((e: LayoutChangeEvent) => {
+  const onContainerLayout = (e: LayoutChangeEvent) => {
     const { width, height } = e.nativeEvent.layout;
-    console.log('[SCAN_OVERLAY] container layout:', JSON.stringify({ width, height }));
-    console.log('[SCAN_OVERLAY] Dimensions.window:', JSON.stringify(screenDims));
     setContainerSize({ width, height });
-  }, []);
+  };
 
   useEffect(() => {
     scanLineY.value = withRepeat(
@@ -44,25 +42,18 @@ export function ScanOverlay() {
   const horizontalOverlayHeight = (containerSize.height - WINDOW_SIZE) / 2;
   const sideOverlayWidth = (containerSize.width - WINDOW_SIZE) / 2;
 
-  console.log('[SCAN_OVERLAY] computed overlay heights:', {
-    horizontalOverlayHeight,
-    sideOverlayWidth,
-    containerHeight: containerSize.height,
-    containerWidth: containerSize.width,
-  });
-
   return (
     <View className="absolute inset-0" onLayout={onContainerLayout}>
-      {/* Top overlay — DEBUG: BLUE */}
+      {/* Top overlay */}
       <View
-        style={{ height: horizontalOverlayHeight, backgroundColor: 'rgba(0,0,255,0.5)' }}
+        style={{ height: horizontalOverlayHeight, backgroundColor: 'rgba(0,0,0,0.7)' }}
         className="w-full"
       />
       {/* Middle row */}
       <View className="flex-row" style={{ height: WINDOW_SIZE }}>
-        {/* Left overlay — DEBUG: GREEN */}
-        <View style={{ width: sideOverlayWidth, backgroundColor: 'rgba(0,200,0,0.5)' }} />
-        {/* Scan window — DEBUG: transparent (camera shows through) */}
+        {/* Left overlay */}
+        <View style={{ width: sideOverlayWidth, backgroundColor: 'rgba(0,0,0,0.7)' }} />
+        {/* Scan window */}
         <View style={{ width: WINDOW_SIZE, height: WINDOW_SIZE, overflow: 'hidden' }}>
           {/* Top-left corner bracket */}
           <View
@@ -130,11 +121,11 @@ export function ScanOverlay() {
             ]}
           />
         </View>
-        {/* Right overlay — DEBUG: ORANGE */}
-        <View style={{ flex: 1, backgroundColor: 'rgba(255,165,0,0.5)' }} />
+        {/* Right overlay */}
+        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.7)' }} />
       </View>
-      {/* Bottom overlay — DEBUG: RED — flex:1 fills whatever remains */}
-      <View style={{ flex: 1, backgroundColor: 'rgba(255,0,0,0.5)' }} />
+      {/* Bottom overlay */}
+      <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.7)' }} />
     </View>
   );
 }

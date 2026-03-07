@@ -42,7 +42,11 @@ export default function TabsLayout() {
         headerShown: false,
         tabBarActiveTintColor: COLORS.tabActive,
         tabBarInactiveTintColor: COLORS.tabInactive,
+        // FIX: position absolute so the tab bar floats over all screens.
+        // This prevents React Navigation from leaving a gap between screen content
+        // and the tab bar (which caused the home screen to bleed through on scan).
         tabBarStyle: {
+          position: 'absolute',
           backgroundColor: COLORS.tabBar,
           borderTopWidth: 1,
           borderTopColor: COLORS.border,
@@ -68,18 +72,6 @@ export default function TabsLayout() {
           title: '',
           tabBarButton: (props) => <CenterTabButton {...props} />,
           tabBarItemStyle: { overflow: 'visible', backgroundColor: 'transparent' },
-          // APPROACH: position:absolute makes the tab bar float OVER the screen
-          // content, so the camera can fill all the way to the bottom of the screen.
-          // This means the camera renders behind the tab bar instead of stopping above it.
-          tabBarStyle: {
-            position: 'absolute',
-            backgroundColor: 'rgba(237,233,254,0.85)', // semi-transparent so you can see if camera shows through
-            borderTopWidth: 1,
-            borderTopColor: COLORS.border,
-            elevation: 0,
-            shadowOpacity: 0,
-            overflow: 'visible',
-          },
         }}
       />
       <Tabs.Screen

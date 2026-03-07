@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useLocalSearchParams } from 'expo-router';
 import { useChat } from '../../hooks/useChat';
 import { useTestHistory } from '../../context/ScanHistoryContext';
@@ -43,6 +44,7 @@ export default function ChatScreen() {
 
   const { messages, sendMessage, clearChat, isStreaming, chatPhase, clinicalSummary, streamingText } =
     useChat(testContext);
+  const tabBarHeight = useBottomTabBarHeight();
   const flatListRef = useRef<FlatList<Message>>(null);
 
   useEffect(() => {
@@ -175,9 +177,9 @@ export default function ChatScreen() {
           showsVerticalScrollIndicator={false}
         />
 
-        <SafeAreaView edges={['bottom']} style={{ backgroundColor: COLORS.background }}>
+        <View style={{ paddingBottom: tabBarHeight, backgroundColor: COLORS.background }}>
           <ChatInput onSend={sendMessage} disabled={isStreaming} />
-        </SafeAreaView>
+        </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

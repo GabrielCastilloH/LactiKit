@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, LayoutChangeEvent } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router, useFocusEffect } from 'expo-router';
@@ -15,17 +15,6 @@ export default function ScanScreen() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const { addTest } = useTestHistory();
   const insets = useSafeAreaInsets();
-
-  // LOG: surface all inset/dimension info to understand the gap
-  console.log('[SCAN] useSafeAreaInsets:', JSON.stringify(insets));
-
-  const onRootLayout = useCallback((e: LayoutChangeEvent) => {
-    console.log('[SCAN] root View layout:', JSON.stringify(e.nativeEvent.layout));
-  }, []);
-
-  const onCameraLayout = useCallback((e: LayoutChangeEvent) => {
-    console.log('[SCAN] CameraView layout:', JSON.stringify(e.nativeEvent.layout));
-  }, []);
 
   const handleComplete = useCallback(() => {
     const date = new Date().toISOString().split('T')[0];
@@ -97,22 +86,16 @@ export default function ScanScreen() {
     );
   }
 
-  // APPROACH: Drop SafeAreaView entirely for the camera screen.
-  // SafeAreaView with edges=['bottom'] adds bottom padding = home-indicator height,
-  // which creates an opaque black gap between the camera and the tab bar.
-  // We manually apply only the top inset so the camera view fills all the way
-  // down to (and flush against) the tab bar.
-  // ROOT container: DEBUG YELLOW so the insets.top padding strip is visible
   return (
     <View
-      style={{ flex: 1, backgroundColor: 'yellow', paddingTop: insets.top }}
-      onLayout={onRootLayout}
+      style={{
+        position: 'absolute',
+        top: 0, left: 0, right: 0, bottom: 0,
+        backgroundColor: '#000',
+        paddingTop: insets.top,
+      }}
     >
-      <CameraView
-        style={{ flex: 1 }}
-        facing="back"
-        onLayout={onCameraLayout}
-      />
+      <CameraView style={{ flex: 1 }} facing="back" />
       <ScanOverlay />
       <AnalyzingModal visible={isAnalyzing} />
     </View>
