@@ -25,7 +25,7 @@ export function HealthScoreChart({ tests }: Props) {
     const score = Math.round((normal / t.biomarkers.length) * 100);
     const d = new Date(t.date);
     const label = `${d.getMonth() + 1}/${d.getDate()}`;
-    const dotColor = score === 100 ? '#22C55E' : score >= 66 ? '#22C55E' : COLORS.warning;
+    const dotColor = score === 100 ? '#7BAAA3' : score >= 66 ? '#7BAAA3' : COLORS.warning;
     return { value: score, label, dataPointColor: dotColor };
   });
 
@@ -33,7 +33,7 @@ export function HealthScoreChart({ tests }: Props) {
   const prev = chartData[chartData.length - 2].value;
   const delta = latest - prev;
   const deltaText = delta > 0 ? `+${delta}%` : delta < 0 ? `${delta}%` : '—';
-  const deltaColor = delta > 0 ? '#22C55E' : delta < 0 ? COLORS.danger : '#9CA3AF';
+  const deltaColor = delta > 0 ? '#7BAAA3' : delta < 0 ? COLORS.danger : '#9CA3AF';
 
   return (
     <View>
@@ -68,7 +68,7 @@ export function HealthScoreChart({ tests }: Props) {
       />
       <View style={{ flexDirection: 'row', gap: 16, marginTop: 4, justifyContent: 'center' }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-          <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: '#22C55E' }} />
+          <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: '#7BAAA3' }} />
           <Text style={{ fontSize: 11, color: '#9CA3AF' }}>All normal</Text>
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
