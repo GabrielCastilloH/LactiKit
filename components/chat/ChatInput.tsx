@@ -25,7 +25,7 @@ export function ChatInput({ onSend, disabled = false }: ChatInputProps) {
     >
       <TextInput
         className="flex-1 rounded-full px-4 text-base text-gray-800 mr-3"
-        style={{ backgroundColor: COLORS.tabBar, height: 48, textAlignVertical: 'center' }}
+        style={{ backgroundColor: COLORS.tabBar, height: 52, paddingTop: 11, paddingBottom: 17 }}
         placeholder="Ask Nurse Maya..."
         placeholderTextColor={COLORS.tabInactive}
         value={text}
@@ -38,7 +38,7 @@ export function ChatInput({ onSend, disabled = false }: ChatInputProps) {
       <TouchableOpacity
         onPress={handleSend}
         disabled={!canSend}
-        className="w-12 h-12 rounded-full items-center justify-center"
+        className="w-[52px] h-[52px] rounded-full items-center justify-center"
         style={{ backgroundColor: COLORS.tabBar }}
       >
         <Text style={{ color: canSend ? COLORS.primary : COLORS.tabInactive, fontSize: 18 }}>{'→'}</Text>
