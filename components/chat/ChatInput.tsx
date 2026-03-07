@@ -39,9 +39,9 @@ export function ChatInput({ onSend, disabled = false }: ChatInputProps) {
         onPress={handleSend}
         disabled={!canSend}
         className="w-12 h-12 rounded-full items-center justify-center"
-        style={{ backgroundColor: canSend ? COLORS.primary : COLORS.border }}
+        style={{ backgroundColor: COLORS.tabBar }}
       >
-        <Text style={{ color: canSend ? '#FFFFFF' : COLORS.tabInactive, fontSize: 18 }}>{'→'}</Text>
+        <Text style={{ color: canSend ? COLORS.primary : COLORS.tabInactive, fontSize: 18 }}>{'→'}</Text>
       </TouchableOpacity>
     </View>
   );

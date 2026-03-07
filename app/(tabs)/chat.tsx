@@ -177,7 +177,7 @@ export default function ChatScreen() {
           showsVerticalScrollIndicator={false}
         />
 
-        <View style={{ paddingBottom: tabBarHeight + 16, backgroundColor: COLORS.background }}>
+        <View style={{ paddingBottom: tabBarHeight + 16, backgroundColor: COLORS.surface }}>
           <ChatInput onSend={sendMessage} disabled={isStreaming} />
         </View>
       </KeyboardAvoidingView>
