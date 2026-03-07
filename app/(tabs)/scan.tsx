@@ -54,28 +54,6 @@ export default function ScanScreen() {
       {/* Scan overlay (dark borders + corner brackets + scan line) */}
       <ScanOverlay />
 
-      {/* Bottom controls */}
-      <SafeAreaView
-        edges={['bottom']}
-        className="absolute bottom-0 left-0 right-0 items-center pb-8"
-      >
-        <Text className="text-white text-base font-medium mb-5 tracking-wide">
-          Scan Milk Sample
-        </Text>
-        <TouchableOpacity
-          onPress={() => setIsAnalyzing(true)}
-          disabled={isAnalyzing}
-          className="items-center justify-center rounded-full"
-          style={{
-            width: 64,
-            height: 64,
-            backgroundColor: '#FFFFFF',
-          }}
-        >
-          <Text style={{ fontSize: 28, color: COLORS.primary }}>⦿</Text>
-        </TouchableOpacity>
-      </SafeAreaView>
-
       {/* Analyzing modal — rendered on top of everything */}
       <AnalyzingModal visible={isAnalyzing} />
     </View>

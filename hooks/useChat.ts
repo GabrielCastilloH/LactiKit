@@ -18,6 +18,14 @@ export function useChat() {
   const [streamingText, setStreamingText] = useState('');
   const assistantTurnCount = useRef(1); // starts at 1 because of initial message
 
+  const clearChat = useCallback(() => {
+    setMessages([INITIAL_MESSAGE]);
+    setChatPhase('questioning');
+    setClinicalSummary('');
+    setStreamingText('');
+    assistantTurnCount.current = 1;
+  }, []);
+
   const sendMessage = useCallback(async (userContent: string) => {
     if (isStreaming) return;
 
@@ -84,6 +92,7 @@ export function useChat() {
   return {
     messages,
     sendMessage,
+    clearChat,
     isStreaming,
     chatPhase,
     clinicalSummary,

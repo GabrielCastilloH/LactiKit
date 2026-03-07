@@ -35,7 +35,7 @@ const RECIPES = [
 ];
 
 export default function ChatScreen() {
-  const { messages, sendMessage, isStreaming, chatPhase, clinicalSummary, streamingText } = useChat();
+  const { messages, sendMessage, clearChat, isStreaming, chatPhase, clinicalSummary, streamingText } = useChat();
   const flatListRef = useRef<FlatList<Message>>(null);
 
   useEffect(() => {
@@ -150,13 +150,11 @@ export default function ChatScreen() {
             </Text>
             <Text className="text-xs text-gray-500">AI Maternal Health Nurse</Text>
           </View>
-          <View className="flex-row items-center">
-            <View
-              className="w-2.5 h-2.5 rounded-full mr-1"
-              style={{ backgroundColor: '#10B981' }}
-            />
-            <Text className="text-xs text-gray-500">Online</Text>
-          </View>
+          <TouchableOpacity onPress={clearChat} hitSlop={8}>
+            <Text className="text-xs font-semibold" style={{ color: COLORS.primary }}>
+              Clear
+            </Text>
+          </TouchableOpacity>
         </View>
 
         {/* Message List */}
@@ -173,7 +171,9 @@ export default function ChatScreen() {
         />
 
         {/* Input */}
-        <ChatInput onSend={sendMessage} disabled={isStreaming} />
+        <SafeAreaView edges={['bottom']} style={{ backgroundColor: COLORS.background }}>
+          <ChatInput onSend={sendMessage} disabled={isStreaming} />
+        </SafeAreaView>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
