@@ -68,8 +68,12 @@ export default function TabsLayout() {
           title: '',
           tabBarButton: (props) => <CenterTabButton {...props} />,
           tabBarItemStyle: { overflow: 'visible', backgroundColor: 'transparent' },
+          // APPROACH: position:absolute makes the tab bar float OVER the screen
+          // content, so the camera can fill all the way to the bottom of the screen.
+          // This means the camera renders behind the tab bar instead of stopping above it.
           tabBarStyle: {
-            backgroundColor: COLORS.tabBar,
+            position: 'absolute',
+            backgroundColor: 'rgba(237,233,254,0.85)', // semi-transparent so you can see if camera shows through
             borderTopWidth: 1,
             borderTopColor: COLORS.border,
             elevation: 0,

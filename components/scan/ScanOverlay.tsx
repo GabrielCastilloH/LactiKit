@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { View, Dimensions } from 'react-native';
+import React, { useEffect, useState, useCallback } from 'react';
+import { View, Dimensions, LayoutChangeEvent } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -9,10 +9,25 @@ import Animated, {
 } from 'react-native-reanimated';
 
 const WINDOW_SIZE = 280;
-const { width, height } = Dimensions.get('window');
+// Fallback to window dims but we'll override with actual layout measurement
+const screenDims = Dimensions.get('window');
 
 export function ScanOverlay() {
   const scanLineY = useSharedValue(0);
+  // Use actual container size measured via onLayout instead of Dimensions.get('window').
+  // Dimensions.get('window') returns full screen height, but the camera renders in a
+  // smaller area (above the tab bar), so centering based on window height was wrong.
+  const [containerSize, setContainerSize] = useState({
+    width: screenDims.width,
+    height: screenDims.height,
+  });
+
+  const onContainerLayout = useCallback((e: LayoutChangeEvent) => {
+    const { width, height } = e.nativeEvent.layout;
+    console.log('[SCAN_OVERLAY] container layout:', JSON.stringify({ width, height }));
+    console.log('[SCAN_OVERLAY] Dimensions.window:', JSON.stringify(screenDims));
+    setContainerSize({ width, height });
+  }, []);
 
   useEffect(() => {
     scanLineY.value = withRepeat(
@@ -26,21 +41,28 @@ export function ScanOverlay() {
     transform: [{ translateY: scanLineY.value }],
   }));
 
-  const horizontalOverlayHeight = (height - WINDOW_SIZE) / 2;
-  const sideOverlayWidth = (width - WINDOW_SIZE) / 2;
+  const horizontalOverlayHeight = (containerSize.height - WINDOW_SIZE) / 2;
+  const sideOverlayWidth = (containerSize.width - WINDOW_SIZE) / 2;
+
+  console.log('[SCAN_OVERLAY] computed overlay heights:', {
+    horizontalOverlayHeight,
+    sideOverlayWidth,
+    containerHeight: containerSize.height,
+    containerWidth: containerSize.width,
+  });
 
   return (
-    <View className="absolute inset-0">
-      {/* Top overlay */}
+    <View className="absolute inset-0" onLayout={onContainerLayout}>
+      {/* Top overlay — DEBUG: BLUE */}
       <View
-        style={{ height: horizontalOverlayHeight, backgroundColor: 'rgba(0,0,0,0.7)' }}
+        style={{ height: horizontalOverlayHeight, backgroundColor: 'rgba(0,0,255,0.5)' }}
         className="w-full"
       />
       {/* Middle row */}
       <View className="flex-row" style={{ height: WINDOW_SIZE }}>
-        {/* Left overlay */}
-        <View style={{ width: sideOverlayWidth, backgroundColor: 'rgba(0,0,0,0.7)' }} />
-        {/* Scan window */}
+        {/* Left overlay — DEBUG: GREEN */}
+        <View style={{ width: sideOverlayWidth, backgroundColor: 'rgba(0,200,0,0.5)' }} />
+        {/* Scan window — DEBUG: transparent (camera shows through) */}
         <View style={{ width: WINDOW_SIZE, height: WINDOW_SIZE, overflow: 'hidden' }}>
           {/* Top-left corner bracket */}
           <View
@@ -108,11 +130,11 @@ export function ScanOverlay() {
             ]}
           />
         </View>
-        {/* Right overlay */}
-        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.7)' }} />
+        {/* Right overlay — DEBUG: ORANGE */}
+        <View style={{ flex: 1, backgroundColor: 'rgba(255,165,0,0.5)' }} />
       </View>
-      {/* Bottom overlay */}
-      <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.7)' }} />
+      {/* Bottom overlay — DEBUG: RED — flex:1 fills whatever remains */}
+      <View style={{ flex: 1, backgroundColor: 'rgba(255,0,0,0.5)' }} />
     </View>
   );
 }
