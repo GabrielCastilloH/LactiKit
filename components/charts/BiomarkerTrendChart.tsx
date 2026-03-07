@@ -131,7 +131,8 @@ export function BiomarkerTrendChart({ biomarkerName, displayName, unit, tests, c
           width={270}
           height={100}
           barWidth={28}
-          barBorderRadius={4}
+          barBorderTopLeftRadius={4}
+          barBorderTopRightRadius={4}
           frontColor={COLORS.primary}
           gradientColor={COLORS.primary + '88'}
           isAnimated
