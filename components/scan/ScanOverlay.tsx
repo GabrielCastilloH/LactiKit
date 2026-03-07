@@ -102,7 +102,7 @@ export function ScanOverlay() {
                 left: 0,
                 right: 0,
                 height: 2,
-                backgroundColor: '#7C3AED',
+                backgroundColor: '#8B6B8B',
               },
               scanLineStyle,
             ]}

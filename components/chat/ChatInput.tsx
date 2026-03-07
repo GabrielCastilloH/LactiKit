@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text } from 'react-native';
+import { COLORS } from '../../lib/constants';
 
 type ChatInputProps = {
   onSend: (text: string) => void;
@@ -18,11 +19,15 @@ export function ChatInput({ onSend, disabled = false }: ChatInputProps) {
   const canSend = text.trim().length > 0 && !disabled;
 
   return (
-    <View className="flex-row items-center px-4 py-3 bg-white border-t border-gray-200">
+    <View
+      className="flex-row items-center px-4 py-3"
+      style={{ backgroundColor: COLORS.surface, borderTopWidth: 1, borderTopColor: COLORS.border }}
+    >
       <TextInput
-        className="flex-1 bg-gray-100 rounded-full px-4 py-3 text-base text-gray-800 mr-3"
+        className="flex-1 rounded-full px-4 py-3 text-base text-gray-800 mr-3"
+        style={{ backgroundColor: COLORS.tabBar }}
         placeholder="Ask Nurse Maya..."
-        placeholderTextColor="#9CA3AF"
+        placeholderTextColor={COLORS.tabInactive}
         value={text}
         onChangeText={setText}
         editable={!disabled}
@@ -34,9 +39,9 @@ export function ChatInput({ onSend, disabled = false }: ChatInputProps) {
         onPress={handleSend}
         disabled={!canSend}
         className="w-12 h-12 rounded-full items-center justify-center"
-        style={{ backgroundColor: canSend ? '#7C3AED' : '#E5E7EB' }}
+        style={{ backgroundColor: canSend ? COLORS.primary : COLORS.border }}
       >
-        <Text style={{ color: canSend ? '#FFFFFF' : '#9CA3AF', fontSize: 18 }}>{'→'}</Text>
+        <Text style={{ color: canSend ? '#FFFFFF' : COLORS.tabInactive, fontSize: 18 }}>{'→'}</Text>
       </TouchableOpacity>
     </View>
   );

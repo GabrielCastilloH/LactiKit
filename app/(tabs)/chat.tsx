@@ -9,11 +9,12 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useChat } from '../hooks/useChat';
-import { MessageBubble } from '../components/chat/MessageBubble';
-import { TypingIndicator } from '../components/chat/TypingIndicator';
-import { ChatInput } from '../components/chat/ChatInput';
-import { Message } from '../types';
+import { useChat } from '../../hooks/useChat';
+import { MessageBubble } from '../../components/chat/MessageBubble';
+import { TypingIndicator } from '../../components/chat/TypingIndicator';
+import { ChatInput } from '../../components/chat/ChatInput';
+import { Message } from '../../types';
+import { COLORS } from '../../lib/constants';
 
 const RECIPES = [
   {
@@ -70,14 +71,12 @@ export default function ChatScreen() {
             {RECIPES.map((recipe, index) => (
               <View
                 key={index}
-                className="bg-white rounded-2xl p-4 mr-3"
+                className="rounded-2xl p-4 mr-3"
                 style={{
                   width: 200,
-                  shadowColor: '#000',
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: 0.08,
-                  shadowRadius: 8,
-                  elevation: 3,
+                  backgroundColor: COLORS.surface,
+                  borderWidth: 1,
+                  borderColor: COLORS.border,
                 }}
               >
                 <Text style={{ fontSize: 36 }} className="mb-2">
@@ -96,26 +95,26 @@ export default function ChatScreen() {
           className="mt-4 mb-2 rounded-2xl p-4"
           style={{
             borderWidth: 1.5,
-            borderColor: '#EF4444',
+            borderColor: COLORS.danger,
             backgroundColor: '#FFF5F5',
           }}
         >
-          <Text className="font-bold text-base mb-1" style={{ color: '#EF4444' }}>
+          <Text className="font-bold text-base mb-1" style={{ color: COLORS.danger }}>
             ⚕ Clinical Referral Recommended
           </Text>
           <Text className="text-gray-600 text-sm mb-3">
             Nurse Maya recommends consulting a healthcare provider
           </Text>
           {clinicalSummary.length > 0 && (
-            <View className="bg-gray-100 rounded-xl p-3 mb-3">
+            <View className="rounded-xl p-3 mb-3" style={{ backgroundColor: COLORS.tabBar }}>
               <Text className="text-gray-700 text-sm leading-5">{clinicalSummary}</Text>
             </View>
           )}
           <TouchableOpacity
             className="rounded-xl py-3 items-center"
-            style={{ borderWidth: 1.5, borderColor: '#EF4444' }}
+            style={{ borderWidth: 1.5, borderColor: COLORS.danger }}
           >
-            <Text className="font-semibold text-sm" style={{ color: '#EF4444' }}>
+            <Text className="font-semibold text-sm" style={{ color: COLORS.danger }}>
               Find a Clinic
             </Text>
           </TouchableOpacity>
@@ -125,24 +124,28 @@ export default function ChatScreen() {
   );
 
   return (
-    <SafeAreaView className="flex-1" style={{ backgroundColor: '#F5F0FF' }} edges={['top']}>
+    <SafeAreaView className="flex-1" style={{ backgroundColor: COLORS.background }} edges={['top']}>
       <KeyboardAvoidingView
         className="flex-1"
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
         {/* Header */}
         <View
-          className="flex-row items-center px-4 py-3 border-b border-gray-100"
-          style={{ backgroundColor: '#F5F0FF' }}
+          className="flex-row items-center px-4 py-3"
+          style={{
+            backgroundColor: COLORS.background,
+            borderBottomWidth: 1,
+            borderBottomColor: COLORS.border,
+          }}
         >
           <View
             className="w-10 h-10 rounded-full items-center justify-center mr-3"
-            style={{ backgroundColor: '#EDE9FE' }}
+            style={{ backgroundColor: COLORS.tabBar }}
           >
             <Text style={{ fontSize: 20 }}>👩‍⚕️</Text>
           </View>
           <View className="flex-1">
-            <Text className="font-bold text-base" style={{ color: '#7C3AED' }}>
+            <Text className="font-bold text-base" style={{ color: COLORS.primary }}>
               Nurse Maya
             </Text>
             <Text className="text-xs text-gray-500">AI Maternal Health Nurse</Text>
@@ -164,7 +167,7 @@ export default function ChatScreen() {
           renderItem={renderItem}
           ListFooterComponent={ListFooter}
           contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 16, paddingBottom: 8 }}
-          style={{ backgroundColor: '#F5F0FF' }}
+          style={{ backgroundColor: COLORS.background }}
           onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
           showsVerticalScrollIndicator={false}
         />

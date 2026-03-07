@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ScanOverlay } from '../components/scan/ScanOverlay';
-import { AnalyzingModal } from '../components/scan/AnalyzingModal';
-import { useAnalyzing } from '../hooks/useAnalyzing';
+import { useFocusEffect } from 'expo-router';
+import { ScanOverlay } from '../../components/scan/ScanOverlay';
+import { AnalyzingModal } from '../../components/scan/AnalyzingModal';
+import { useAnalyzing } from '../../hooks/useAnalyzing';
+import { captureRef } from '../../utils/cameraCapture';
+import { COLORS } from '../../lib/constants';
 
 export default function ScanScreen() {
   const [permission, requestPermission] = useCameraPermissions();
@@ -12,14 +15,20 @@ export default function ScanScreen() {
 
   useAnalyzing(isAnalyzing);
 
+  useFocusEffect(
+    useCallback(() => {
+      captureRef.current = () => { if (!isAnalyzing) setIsAnalyzing(true); };
+      return () => { captureRef.current = null; };
+    }, [isAnalyzing])
+  );
+
   if (!permission) {
-    // Permissions still loading
-    return <View className="flex-1" style={{ backgroundColor: '#F5F0FF' }} />;
+    return <View className="flex-1" style={{ backgroundColor: COLORS.background }} />;
   }
 
   if (!permission.granted) {
     return (
-      <SafeAreaView className="flex-1 items-center justify-center" style={{ backgroundColor: '#F5F0FF' }}>
+      <SafeAreaView className="flex-1 items-center justify-center" style={{ backgroundColor: COLORS.background }}>
         <Text className="text-lg font-semibold text-center mb-2" style={{ color: '#1F2937' }}>
           Camera access needed
         </Text>
@@ -29,7 +38,7 @@ export default function ScanScreen() {
         <TouchableOpacity
           onPress={requestPermission}
           className="rounded-xl px-6 py-3"
-          style={{ backgroundColor: '#7C3AED' }}
+          style={{ backgroundColor: COLORS.primary }}
         >
           <Text className="text-white font-semibold text-base">Grant Permission</Text>
         </TouchableOpacity>
@@ -61,14 +70,9 @@ export default function ScanScreen() {
             width: 64,
             height: 64,
             backgroundColor: '#FFFFFF',
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.25,
-            shadowRadius: 4,
-            elevation: 5,
           }}
         >
-          <Text style={{ fontSize: 28, color: '#7C3AED' }}>⦿</Text>
+          <Text style={{ fontSize: 28, color: COLORS.primary }}>⦿</Text>
         </TouchableOpacity>
       </SafeAreaView>
 

@@ -1,4 +1,5 @@
 import { View } from 'react-native';
+import { COLORS } from '../../lib/constants';
 
 type CardProps = {
   children: React.ReactNode;
@@ -8,7 +9,8 @@ type CardProps = {
 export function Card({ children, className = '' }: CardProps) {
   return (
     <View
-      className={`bg-white rounded-2xl shadow p-4 ${className}`}
+      className={`rounded-2xl p-4 ${className}`}
+      style={{ backgroundColor: COLORS.surface, borderWidth: 1, borderColor: COLORS.border }}
     >
       {children}
     </View>

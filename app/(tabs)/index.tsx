@@ -10,8 +10,9 @@ import Animated, {
   withTiming,
   Easing,
 } from 'react-native-reanimated';
-import { Card } from '../components/ui/Card';
-import { Badge } from '../components/ui/Badge';
+import { Card } from '../../components/ui/Card';
+import { Badge } from '../../components/ui/Badge';
+import { COLORS } from '../../lib/constants';
 
 export default function HomeScreen() {
   const scale = useSharedValue(1);
@@ -32,13 +33,13 @@ export default function HomeScreen() {
   }));
 
   return (
-    <SafeAreaView className="flex-1" style={{ backgroundColor: '#F5F0FF' }}>
+    <SafeAreaView className="flex-1" style={{ backgroundColor: COLORS.background }}>
       <View className="flex-1 px-6 pt-10 pb-6">
         {/* Header */}
         <View className="items-center mb-12">
           <Text
             className="text-4xl font-bold mb-2"
-            style={{ color: '#7C3AED' }}
+            style={{ color: COLORS.primary }}
           >
             LactiKit
           </Text>
@@ -51,9 +52,9 @@ export default function HomeScreen() {
         <View className="flex-1 items-center justify-center">
           <Animated.View style={animatedStyle}>
             <TouchableOpacity
-              onPress={() => router.push('/scan')}
-              className="w-48 h-48 rounded-full items-center justify-center shadow-lg"
-              style={{ backgroundColor: '#7C3AED' }}
+              onPress={() => router.push('/(tabs)/scan')}
+              className="w-48 h-48 rounded-full items-center justify-center"
+              style={{ backgroundColor: COLORS.primary }}
               activeOpacity={0.85}
             >
               <Text className="text-6xl mb-2">📷</Text>

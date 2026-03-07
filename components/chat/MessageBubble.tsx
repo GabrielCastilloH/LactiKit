@@ -1,6 +1,7 @@
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { View, Text } from 'react-native';
 import { Message } from '../../types';
+import { COLORS } from '../../lib/constants';
 
 type Props = { message: Message };
 
@@ -12,7 +13,9 @@ export function MessageBubble({ message }: Props) {
         className="rounded-2xl px-4 py-3"
         style={{
           maxWidth: '80%',
-          backgroundColor: isUser ? '#7C3AED' : '#FFFFFF',
+          backgroundColor: isUser ? COLORS.primary : COLORS.surface,
+          borderWidth: isUser ? 0 : 1,
+          borderColor: COLORS.border,
         }}
       >
         <Text style={{ color: isUser ? '#FFFFFF' : '#1F2937' }} className="text-base leading-6">

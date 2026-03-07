@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 import { Deficiency } from '../../types';
+import { COLORS } from '../../lib/constants';
 
 type DeficiencyCardProps = {
   deficiency: Deficiency;
@@ -9,9 +10,9 @@ type DeficiencyCardProps = {
 function getLevelColor(level: Deficiency['level']): string {
   switch (level) {
     case 'low':
-      return '#EF4444';
+      return COLORS.danger;
     case 'high':
-      return '#F59E0B';
+      return COLORS.warning;
     case 'normal':
       return '#22C55E';
     default:
@@ -33,12 +34,9 @@ export function DeficiencyCard({ deficiency }: DeficiencyCardProps) {
     <View
       className="rounded-xl mb-4 overflow-hidden"
       style={{
-        backgroundColor: '#FFFFFF',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.08,
-        shadowRadius: 6,
-        elevation: 3,
+        backgroundColor: COLORS.surface,
+        borderWidth: 1,
+        borderColor: COLORS.border,
         flexDirection: 'row',
       }}
     >
@@ -85,7 +83,7 @@ export function DeficiencyCard({ deficiency }: DeficiencyCardProps) {
         {/* Progress bar */}
         <View
           className="rounded-full overflow-hidden"
-          style={{ height: 6, backgroundColor: '#F3F4F6' }}
+          style={{ height: 6, backgroundColor: COLORS.border }}
         >
           <View
             style={{

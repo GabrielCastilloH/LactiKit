@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { View, Text } from 'react-native';
+import { COLORS } from '../../lib/constants';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -38,7 +39,7 @@ function Dot({ delay }: { delay: number }) {
           width: 8,
           height: 8,
           borderRadius: 4,
-          backgroundColor: '#7C3AED',
+          backgroundColor: COLORS.primary,
           marginHorizontal: 3,
         },
       ]}
@@ -49,7 +50,10 @@ function Dot({ delay }: { delay: number }) {
 export function TypingIndicator() {
   return (
     <View className="flex-row items-center mb-3">
-      <View className="bg-white rounded-2xl px-4 py-3 flex-row items-center" style={{ minHeight: 44 }}>
+      <View
+        className="rounded-2xl px-4 py-3 flex-row items-center"
+        style={{ minHeight: 44, backgroundColor: COLORS.surface, borderWidth: 1, borderColor: COLORS.border }}
+      >
         <Text className="text-gray-500 text-sm mr-2">Nurse Maya</Text>
         <View className="flex-row items-center">
           <Dot delay={0} />

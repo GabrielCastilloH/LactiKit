@@ -1,11 +1,15 @@
 import { ScanResult } from '../types';
 
 export const COLORS = {
-  primary: '#7C3AED',
-  warning: '#F59E0B',
-  danger: '#EF4444',
-  background: '#F5F0FF',
-  surface: '#FFFFFF',
+  primary: '#8B6B8B',
+  warning: '#C9956A',
+  danger: '#B85C5C',
+  background: '#FDF6EE',
+  surface: '#FFFAF5',
+  tabBar: '#F5EDE3',
+  border: '#E5D4C5',
+  tabActive: '#8B6B8B',
+  tabInactive: '#B8A89A',
 };
 
 export const ANALYZING_DURATION_MS = 3000;

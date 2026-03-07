@@ -51,8 +51,8 @@ export function AnalyzingModal({ visible }: Props) {
             height: 80,
             borderRadius: 40,
             borderWidth: 4,
-            borderColor: 'rgba(124,58,237,0.3)',
-            borderTopColor: '#7C3AED',
+            borderColor: 'rgba(139,107,139,0.3)',
+            borderTopColor: '#8B6B8B',
             marginBottom: 24,
           },
         ]}

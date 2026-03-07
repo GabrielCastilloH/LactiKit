@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
-import { SCAN_RESULT } from '../lib/constants';
+import { SCAN_RESULT, COLORS } from '../lib/constants';
 import { DeficiencyCard } from '../components/results/DeficiencyCard';
 
 export default function ResultsScreen() {
@@ -15,11 +15,11 @@ export default function ResultsScreen() {
   });
 
   return (
-    <SafeAreaView className="flex-1" style={{ backgroundColor: '#F5F0FF' }}>
+    <SafeAreaView className="flex-1" style={{ backgroundColor: COLORS.background }}>
       {/* Warning banner */}
       <View
         className="w-full px-4 py-3 flex-row items-center justify-center"
-        style={{ backgroundColor: '#EF4444' }}
+        style={{ backgroundColor: COLORS.danger }}
       >
         <Text className="text-white text-sm font-semibold text-center">
           ⚠ Nutritional Deficiencies Detected
@@ -48,12 +48,9 @@ export default function ResultsScreen() {
         <View
           className="rounded-xl overflow-hidden mb-6"
           style={{
-            backgroundColor: '#FFFFFF',
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.08,
-            shadowRadius: 6,
-            elevation: 3,
+            backgroundColor: COLORS.surface,
+            borderWidth: 1,
+            borderColor: COLORS.border,
           }}
         >
           <TouchableOpacity
@@ -64,7 +61,7 @@ export default function ResultsScreen() {
             <Text className="text-base font-semibold" style={{ color: '#111827' }}>
               What does this mean?
             </Text>
-            <Text className="text-lg" style={{ color: '#7C3AED' }}>
+            <Text className="text-lg" style={{ color: COLORS.primary }}>
               {accordionOpen ? '▲' : '▼'}
             </Text>
           </TouchableOpacity>
@@ -72,9 +69,9 @@ export default function ResultsScreen() {
           {accordionOpen && (
             <View
               className="px-4 pb-4"
-              style={{ borderTopWidth: 1, borderTopColor: '#F3F4F6', paddingTop: 12 }}
+              style={{ borderTopWidth: 1, borderTopColor: COLORS.border, paddingTop: 12 }}
             >
-              <Text className="text-sm font-semibold mb-1" style={{ color: '#EF4444' }}>
+              <Text className="text-sm font-semibold mb-1" style={{ color: COLORS.danger }}>
                 Iron Deficiency
               </Text>
               <Text className="text-sm mb-4" style={{ color: '#374151', lineHeight: 20 }}>
@@ -82,7 +79,7 @@ export default function ResultsScreen() {
                 immune function. Nursing mothers are at higher risk of iron deficiency due to
                 postpartum blood loss and increased nutritional demands.
               </Text>
-              <Text className="text-sm font-semibold mb-1" style={{ color: '#EF4444' }}>
+              <Text className="text-sm font-semibold mb-1" style={{ color: COLORS.danger }}>
                 Vitamin B12 Deficiency
               </Text>
               <Text className="text-sm" style={{ color: '#374151', lineHeight: 20 }}>
@@ -96,9 +93,9 @@ export default function ResultsScreen() {
 
         {/* CTA button */}
         <TouchableOpacity
-          onPress={() => router.push('/chat')}
+          onPress={() => router.push('/(tabs)/chat')}
           className="w-full rounded-xl py-4 items-center"
-          style={{ backgroundColor: '#7C3AED' }}
+          style={{ backgroundColor: COLORS.primary }}
           activeOpacity={0.85}
         >
           <Text className="text-white text-base font-semibold">

@@ -1,4 +1,5 @@
 import { TouchableOpacity, Text, ActivityIndicator } from 'react-native';
+import { COLORS } from '../../lib/constants';
 
 type ButtonProps = {
   title: string;
@@ -21,20 +22,20 @@ export function Button({
 
   const variantClasses = {
     primary: 'border-0',
-    secondary: 'bg-white border-2',
+    secondary: 'border-2',
     danger: 'border-0',
   };
 
   const variantStyle = {
-    primary: { backgroundColor: '#7C3AED' },
-    secondary: { borderColor: '#7C3AED' },
-    danger: { backgroundColor: '#EF4444' },
+    primary: { backgroundColor: COLORS.primary },
+    secondary: { backgroundColor: COLORS.surface, borderColor: COLORS.primary },
+    danger: { backgroundColor: COLORS.danger },
   };
 
   const textColor = {
-    primary: 'text-white',
-    secondary: 'text-purple-700',
-    danger: 'text-white',
+    primary: '#FFFFFF',
+    secondary: COLORS.primary,
+    danger: '#FFFFFF',
   };
 
   const opacityClass = disabled || loading ? 'opacity-50' : 'opacity-100';
@@ -49,11 +50,11 @@ export function Button({
     >
       {loading ? (
         <ActivityIndicator
-          color={variant === 'secondary' ? '#7C3AED' : '#FFFFFF'}
+          color={variant === 'secondary' ? COLORS.primary : '#FFFFFF'}
           size="small"
         />
       ) : (
-        <Text className={`font-semibold text-base ${textColor[variant]}`}>
+        <Text className="font-semibold text-base" style={{ color: textColor[variant] }}>
           {title}
         </Text>
       )}
