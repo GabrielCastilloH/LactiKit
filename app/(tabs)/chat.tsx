@@ -1,9 +1,9 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import {
   View,
   Text,
   FlatList,
-  KeyboardAvoidingView,
+  Keyboard,
   Platform,
   ScrollView,
   TouchableOpacity,
@@ -46,6 +46,15 @@ export default function ChatScreen() {
     useChat(testContext);
   const tabBarHeight = useBottomTabBarHeight();
   const flatListRef = useRef<FlatList<Message>>(null);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+
+  useEffect(() => {
+    const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+    const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+    const showSub = Keyboard.addListener(showEvent, (e) => setKeyboardHeight(e.endCoordinates.height));
+    const hideSub = Keyboard.addListener(hideEvent, () => setKeyboardHeight(0));
+    return () => { showSub.remove(); hideSub.remove(); };
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -127,9 +136,11 @@ export default function ChatScreen() {
     </>
   );
 
+  const inputBottomPadding = keyboardHeight > 0 ? keyboardHeight : tabBarHeight + 16;
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.background }} edges={['top']}>
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <View style={{ flex: 1 }}>
         {/* Header */}
         <View
           style={{
@@ -177,10 +188,10 @@ export default function ChatScreen() {
           showsVerticalScrollIndicator={false}
         />
 
-        <View style={{ paddingBottom: tabBarHeight + 16, backgroundColor: COLORS.surface }}>
+        <View style={{ paddingBottom: inputBottomPadding, backgroundColor: COLORS.surface }}>
           <ChatInput onSend={sendMessage} disabled={isStreaming} />
         </View>
-      </KeyboardAvoidingView>
+      </View>
     </SafeAreaView>
   );
 }
