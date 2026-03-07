@@ -18,7 +18,7 @@ import { MessageBubble } from '../../components/chat/MessageBubble';
 import { TypingIndicator } from '../../components/chat/TypingIndicator';
 import { ChatInput } from '../../components/chat/ChatInput';
 import { Message } from '../../types';
-import { COLORS } from '../../lib/constants';
+import { COLORS, TEST_TYPE_LABELS } from '../../lib/constants';
 
 const RECIPES = [
   {
@@ -41,7 +41,15 @@ const RECIPES = [
 export default function ChatScreen() {
   const { testId } = useLocalSearchParams<{ testId?: string }>();
   const { getTest } = useTestHistory();
-  const testContext = testId ? (getTest(testId) ?? null) : null;
+
+  // activeTestId can be cleared by the user to detach the test from the conversation
+  const [activeTestId, setActiveTestId] = useState<string | null>(testId ?? null);
+  const testContext = activeTestId ? (getTest(activeTestId) ?? null) : null;
+
+  // Sync activeTestId when the route param changes (e.g. navigating from a new test detail)
+  useEffect(() => {
+    setActiveTestId(testId ?? null);
+  }, [testId]);
 
   const { messages, sendMessage, clearChat, isStreaming, chatPhase, clinicalSummary, streamingText } =
     useChat(testContext);
@@ -176,6 +184,45 @@ export default function ChatScreen() {
             <Text style={{ fontSize: 12, fontWeight: '600', color: COLORS.primary }}>Clear</Text>
           </TouchableOpacity>
         </View>
+
+        {/* Test context banner */}
+        {testContext && (
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              paddingHorizontal: 12,
+              paddingVertical: 7,
+              backgroundColor: `${COLORS.primary}18`,
+              borderBottomWidth: 1,
+              borderBottomColor: `${COLORS.primary}30`,
+              gap: 6,
+            }}
+          >
+            <Text style={{ fontSize: 13 }}>📋</Text>
+            <Text style={{ flex: 1, fontSize: 12, fontWeight: '600', color: COLORS.primary }} numberOfLines={1}>
+              {TEST_TYPE_LABELS[testContext.testType] ?? testContext.testType}
+              {'  ·  '}
+              <Text style={{ fontWeight: '400', color: '#6B7280' }}>
+                {new Date(testContext.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+              </Text>
+            </Text>
+            <TouchableOpacity
+              onPress={() => setActiveTestId(null)}
+              hitSlop={10}
+              style={{
+                width: 20,
+                height: 20,
+                borderRadius: 10,
+                backgroundColor: `${COLORS.primary}25`,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Text style={{ fontSize: 11, color: COLORS.primary, fontWeight: '700', lineHeight: 14 }}>✕</Text>
+            </TouchableOpacity>
+          </View>
+        )}
 
         {/* Message List */}
         <FlatList
