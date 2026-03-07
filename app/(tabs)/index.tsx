@@ -154,7 +154,6 @@ export default function HomeScreen() {
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: tabBarHeight + 16 }} showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={{ paddingTop: 20, paddingBottom: 16 }}>
-          <Text style={{ fontSize: 12, color: '#6B7280', marginBottom: 2 }}>Good morning</Text>
           <Text style={{ fontSize: 28, fontWeight: '800', color: COLORS.primary }}>LactiKit</Text>
           <Text style={{ fontSize: 12, color: '#9CA3AF', marginTop: 2 }}>Baby & Maternal Health Tracker</Text>
         </View>

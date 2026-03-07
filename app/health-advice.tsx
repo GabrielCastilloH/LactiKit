@@ -190,7 +190,7 @@ export default function HealthAdviceScreen() {
               key={i}
               style={{
                 flexDirection: 'row',
-                alignItems: 'flex-start',
+                alignItems: 'center',
                 paddingVertical: 10,
                 borderBottomWidth: i < advice.actionItems.length - 1 ? 1 : 0,
                 borderBottomColor: COLORS.border,
@@ -206,7 +206,6 @@ export default function HealthAdviceScreen() {
                   justifyContent: 'center',
                   marginRight: 12,
                   flexShrink: 0,
-                  marginTop: 1,
                 }}
               >
                 <Text style={{ fontSize: 11, fontWeight: '700', color: COLORS.primary }}>{i + 1}</Text>
