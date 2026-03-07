@@ -36,4 +36,5 @@ export interface TestResult {
   date: string;
   testType: TestType;
   biomarkers: Biomarker[];
+  aiOverview?: string;
 }

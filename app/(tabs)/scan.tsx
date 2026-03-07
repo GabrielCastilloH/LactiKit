@@ -18,7 +18,7 @@ export default function ScanScreen() {
 
   const handleComplete = useCallback(() => {
     const date = new Date().toISOString().split('T')[0];
-    addTest({
+    const id = addTest({
       date,
       testType: 'mom_urine',
       biomarkers: [
@@ -52,6 +52,7 @@ export default function ScanScreen() {
       ],
     });
     router.replace('/(tabs)/');
+    router.push(`/test/${id}`);
   }, [addTest]);
 
   useAnalyzing(isAnalyzing, handleComplete);

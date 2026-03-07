@@ -6,6 +6,7 @@ interface TestHistoryContextValue {
   tests: TestResult[];
   addTest: (result: Omit<TestResult, 'id'>) => string;
   getTest: (id: string) => TestResult | undefined;
+  updateTestOverview: (id: string, aiOverview: string) => void;
   pendingTest: TestResult | null;
   setPendingTest: (test: TestResult | null) => void;
 }
@@ -27,8 +28,12 @@ export function ScanHistoryProvider({ children }: { children: React.ReactNode })
     return tests.find(t => t.id === id);
   }, [tests]);
 
+  const updateTestOverview = useCallback((id: string, aiOverview: string) => {
+    setTests(prev => prev.map(t => t.id === id ? { ...t, aiOverview } : t));
+  }, []);
+
   return (
-    <TestHistoryContext.Provider value={{ tests, addTest, getTest, pendingTest, setPendingTest }}>
+    <TestHistoryContext.Provider value={{ tests, addTest, getTest, updateTestOverview, pendingTest, setPendingTest }}>
       {children}
     </TestHistoryContext.Provider>
   );
