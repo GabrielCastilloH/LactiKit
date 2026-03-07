@@ -1,12 +1,12 @@
 import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Share, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../lib/constants';
 import { useTestHistory } from '../context/ScanHistoryContext';
 import { BiomarkerTrendChart } from '../components/charts/BiomarkerTrendChart';
-import { BiomarkerName } from '../types';
+import { BiomarkerName, TestResult } from '../types';
 
 const BAR_CHART_BIOMARKERS: BiomarkerName[] = ['protein', 'ketones', 'alcohol'];
 
@@ -20,6 +20,35 @@ const BIOMARKER_META: { name: BiomarkerName; displayName: string; unit: string }
   { name: 'alcohol', displayName: 'Alcohol', unit: 'mg/dL' },
 ];
 
+function csvCell(value: string | number): string {
+  const str = String(value);
+  // Wrap in quotes if it contains a comma, quote, or newline
+  if (/[,"\n]/.test(str)) return `"${str.replace(/"/g, '""')}"`;
+  return str;
+}
+
+function buildCSV(tests: TestResult[]): string {
+  const header = ['Date', 'Test Type', 'Biomarker', 'Value', 'Unit', 'Level', 'Normal Min', 'Normal Max'];
+  const rows: string[] = [header.map(csvCell).join(',')];
+  for (const test of tests) {
+    for (const b of test.biomarkers) {
+      rows.push(
+        [
+          test.date,
+          test.testType,
+          b.displayName,
+          b.detected,
+          b.unit,
+          b.level,
+          b.normalMin,
+          b.normalMax,
+        ].map(csvCell).join(',')
+      );
+    }
+  }
+  return rows.join('\n');
+}
+
 export default function AllTrendsScreen() {
   const { tests } = useTestHistory();
 
@@ -27,6 +56,22 @@ export default function AllTrendsScreen() {
   const available = BIOMARKER_META.filter(meta =>
     tests.some(t => t.biomarkers.some(b => b.name === meta.name))
   );
+
+  async function handleExport() {
+    if (tests.length === 0) {
+      Alert.alert('No data', 'Run a test first to export data.');
+      return;
+    }
+    const csv = buildCSV(tests);
+    try {
+      await Share.share({
+        title: 'LactiKit Biomarker Data',
+        message: csv,
+      });
+    } catch {
+      Alert.alert('Export failed', 'Could not share data.');
+    }
+  }
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.background }}>
@@ -57,9 +102,27 @@ export default function AllTrendsScreen() {
         >
           <Ionicons name="chevron-back" size={20} color={COLORS.primary} />
         </TouchableOpacity>
-        <Text style={{ fontSize: 20, fontWeight: '800', color: '#111827' }}>
+        <Text style={{ fontSize: 20, fontWeight: '800', color: '#111827', flex: 1 }}>
           All Biomarker Trends
         </Text>
+        <TouchableOpacity
+          onPress={handleExport}
+          activeOpacity={0.7}
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 5,
+            paddingHorizontal: 11,
+            paddingVertical: 6,
+            borderRadius: 20,
+            borderWidth: 1.5,
+            borderColor: `${COLORS.primary}66`,
+            backgroundColor: 'transparent',
+          }}
+        >
+          <Ionicons name="download-outline" size={15} color={COLORS.primary} />
+          <Text style={{ fontSize: 13, fontWeight: '600', color: COLORS.primary }}>Export</Text>
+        </TouchableOpacity>
       </View>
 
       <ScrollView
