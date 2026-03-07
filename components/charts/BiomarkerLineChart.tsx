@@ -39,40 +39,46 @@ export function BiomarkerLineChart({ tests, biomarkerName }: Props) {
 
   return (
     <View>
-      <Text style={{ fontSize: 12, color: '#6B7280', marginBottom: 6 }}>
-        {points[0]!.displayName} trend · {points[0]!.unit}
+      <Text style={{ fontSize: 14, fontWeight: '600', color: '#4B5563', marginBottom: 10, letterSpacing: 0.3 }}>
+        {points[0]!.displayName}
+        <Text style={{ fontSize: 12, fontWeight: '400', color: '#9CA3AF' }}>  {points[0]!.unit}</Text>
       </Text>
       <LineChart
         data={chartData}
-        width={260}
-        height={100}
+        width={270}
+        height={110}
         color={COLORS.primary}
-        thickness={2}
+        thickness={3}
         startFillColor={COLORS.primary}
         endFillColor={COLORS.background}
-        startOpacity={0.25}
-        endOpacity={0.01}
+        startOpacity={0.3}
+        endOpacity={0.0}
         areaChart
         curved
         isAnimated
-        animationDuration={800}
+        animationDuration={900}
         hideDataPoints={false}
         dataPointsColor={COLORS.primary}
-        dataPointsRadius={4}
-        yAxisLabelWidth={36}
-        yAxisTextStyle={{ color: '#9CA3AF', fontSize: 10 }}
-        xAxisLabelTextStyle={{ color: '#9CA3AF', fontSize: 10 }}
-        rulesColor="#F3F4F6"
+        dataPointsRadius={5}
+        yAxisLabelWidth={32}
+        yAxisTextStyle={{ color: '#9CA3AF', fontSize: 11 }}
+        xAxisLabelTextStyle={{ color: '#9CA3AF', fontSize: 12, fontWeight: '500' }}
+        rulesColor="#EDE9FE"
         rulesType="solid"
+        noOfSections={3}
         maxValue={Math.ceil(maxVal * 1.15)}
         mostNegativeValue={Math.floor(minVal * 0.85)}
         showReferenceLine1
         referenceLine1Position={normalMin}
-        referenceLine1Config={{ color: '#22C55E', dashWidth: 4, dashGap: 4, thickness: 1 }}
+        referenceLine1Config={{ color: '#22C55E', dashWidth: 6, dashGap: 4, thickness: 1.5 }}
         showReferenceLine2
         referenceLine2Position={normalMax}
-        referenceLine2Config={{ color: '#22C55E', dashWidth: 4, dashGap: 4, thickness: 1 }}
+        referenceLine2Config={{ color: '#22C55E', dashWidth: 6, dashGap: 4, thickness: 1.5 }}
       />
+      <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4, gap: 6 }}>
+        <View style={{ width: 16, height: 2, backgroundColor: '#22C55E', borderRadius: 1 }} />
+        <Text style={{ fontSize: 11, color: '#9CA3AF' }}>Normal range</Text>
+      </View>
     </View>
   );
 }
