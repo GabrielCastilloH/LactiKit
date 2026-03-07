@@ -13,7 +13,7 @@ export function CircleGraph({ percent, label, color, size = 100 }: Props) {
   const clamped = Math.max(0, Math.min(100, percent));
   const data = [
     { value: clamped, color },
-    { value: 100 - clamped, color: '#E5E7EB' },
+    { value: 100 - clamped, color: '#EDE0D4' },
   ];
 
   return (
@@ -33,6 +33,8 @@ export function CircleGraph({ percent, label, color, size = 100 }: Props) {
         showText={false}
         isAnimated
         animationDuration={800}
+        strokeWidth={0}
+        roundedCorner
       />
       <Text style={{ fontSize: 12, color: '#6B7280', marginTop: 6, fontWeight: '500' }}>
         {label}

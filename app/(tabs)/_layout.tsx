@@ -48,6 +48,7 @@ export default function TabsLayout() {
           borderTopColor: COLORS.border,
           elevation: 0,
           shadowOpacity: 0,
+          overflow: 'visible',
         },
         tabBarLabelStyle: { fontSize: 11, fontWeight: '500' },
       }}
@@ -66,6 +67,15 @@ export default function TabsLayout() {
         options={{
           title: '',
           tabBarButton: (props) => <CenterTabButton {...props} />,
+          tabBarItemStyle: { overflow: 'visible', backgroundColor: 'transparent' },
+          tabBarStyle: {
+            backgroundColor: 'transparent',
+            borderTopWidth: 0,
+            elevation: 0,
+            shadowOpacity: 0,
+            overflow: 'visible',
+            position: 'absolute',
+          },
         }}
       />
       <Tabs.Screen

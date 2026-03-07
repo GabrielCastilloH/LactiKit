@@ -86,23 +86,20 @@ export default function HomeScreen() {
         <Text style={{ fontSize: 15, fontWeight: '700', color: '#111827', marginBottom: 14 }}>Health Overview</Text>
         <View
           style={{
-            backgroundColor: COLORS.surface,
+            backgroundColor: COLORS.background,
             borderRadius: 16,
             padding: 20,
             marginBottom: 20,
             flexDirection: 'row',
             justifyContent: 'space-around',
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.06,
-            shadowRadius: 8,
-            elevation: 2,
+            borderWidth: 1,
+            borderColor: COLORS.border,
           }}
         >
           <CircleGraph
             percent={hydrationScore}
             label="Hydration"
-            color="#38BDF8"
+            color="#7BAAA3"
             size={110}
           />
           <View style={{ width: 1, backgroundColor: COLORS.border }} />
