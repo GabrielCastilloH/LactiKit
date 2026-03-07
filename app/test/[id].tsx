@@ -138,7 +138,7 @@ function SurveyCard({ questions, onComplete }: SurveyCardProps) {
         <Text style={{ fontSize: 18, marginRight: 8 }}>🩺</Text>
         <Text style={{ fontSize: 14, fontWeight: '700', color: COLORS.primary }}>A few quick questions</Text>
       </View>
-      <Text style={{ fontSize: 12, color: '#9CA3AF', marginBottom: 16 }}>
+      <Text style={{ fontSize: 12, color: '#6B7280', marginBottom: 16 }}>
         Question {step + 1} of {questions.length}
       </Text>
 
