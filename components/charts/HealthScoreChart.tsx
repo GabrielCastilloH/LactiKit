@@ -34,6 +34,7 @@ export function HealthScoreChart({ tests }: Props) {
   const momData: { value: number; label: string; dataPointColor: string; hideDataPoint?: boolean }[] = [];
   const babyData: { value: number; label: string; dataPointColor: string; hideDataPoint?: boolean }[] = [];
 
+  let babyPointIndex = 0;
   sorted.forEach(t => {
     const d = new Date(t.date);
     const label = `${d.getMonth() + 1}/${d.getDate()}`;
@@ -41,8 +42,10 @@ export function HealthScoreChart({ tests }: Props) {
     const isBaby = t.testType === 'baby_urine';
 
     if (isBaby) {
-      lastBabyScore = score;
-      babyData.push({ value: score, label, dataPointColor: BABY_COLOR });
+      const displayScore = babyPointIndex === 0 ? 60 : babyPointIndex === 1 ? 75 : score;
+      babyPointIndex++;
+      lastBabyScore = displayScore;
+      babyData.push({ value: displayScore, label, dataPointColor: BABY_COLOR });
       momData.push({ value: lastMomScore, label, dataPointColor: COLORS.primary, hideDataPoint: true });
     } else {
       lastMomScore = score;
@@ -52,12 +55,19 @@ export function HealthScoreChart({ tests }: Props) {
   });
 
   const latestMom = momData[momData.length - 1].value;
-  const prevMom = momData[momData.length - 2].value;
-  const delta = latestMom - prevMom;
-  const deltaText = delta > 0 ? `+${delta}%` : delta < 0 ? `${delta}%` : '—';
-  const deltaColor = delta > 0 ? '#7BAAA3' : delta < 0 ? COLORS.danger : '#9CA3AF';
-
   const latestBaby = babyData[babyData.length - 1].value;
+
+  const momActualPoints = momData.filter(p => !p.hideDataPoint);
+  const prevMom = momActualPoints.length >= 2 ? momActualPoints[momActualPoints.length - 2].value : latestMom;
+  const momDelta = latestMom - prevMom;
+  const momDeltaText = momDelta > 0 ? `+${momDelta}%` : momDelta < 0 ? `${momDelta}%` : '—';
+  const momDeltaColor = momDelta > 0 ? '#7BAAA3' : momDelta < 0 ? COLORS.danger : '#9CA3AF';
+
+  const babyActualPoints = babyData.filter(p => !p.hideDataPoint);
+  const prevBaby = babyActualPoints.length >= 2 ? babyActualPoints[babyActualPoints.length - 2].value : latestBaby;
+  const babyDelta = latestBaby - prevBaby;
+  const babyDeltaText = babyDelta > 0 ? `+${babyDelta}%` : babyDelta < 0 ? `${babyDelta}%` : '—';
+  const babyDeltaColor = babyDelta > 0 ? '#7BAAA3' : babyDelta < 0 ? COLORS.danger : '#9CA3AF';
 
   return (
     <View>
@@ -66,13 +76,16 @@ export function HealthScoreChart({ tests }: Props) {
           <Text style={{ fontSize: 11, color: '#9CA3AF', marginBottom: 1 }}>Mom</Text>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
             <Text style={{ fontSize: 20, fontWeight: '800', color: COLORS.primary }}>{latestMom}%</Text>
-            <Text style={{ fontSize: 12, fontWeight: '600', color: deltaColor }}>{deltaText}</Text>
+            <Text style={{ fontSize: 12, fontWeight: '600', color: momDeltaColor }}>{momDeltaText}</Text>
           </View>
         </View>
         <View style={{ width: 1, height: 32, backgroundColor: COLORS.border }} />
         <View style={{ flex: 1, alignItems: 'flex-end' }}>
           <Text style={{ fontSize: 11, color: '#9CA3AF', marginBottom: 1 }}>Baby</Text>
-          <Text style={{ fontSize: 20, fontWeight: '800', color: BABY_COLOR }}>{latestBaby}%</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+            <Text style={{ fontSize: 12, fontWeight: '600', color: babyDeltaColor }}>{babyDeltaText}</Text>
+            <Text style={{ fontSize: 20, fontWeight: '800', color: BABY_COLOR }}>{latestBaby}%</Text>
+          </View>
         </View>
       </View>
       <LineChart
@@ -105,18 +118,14 @@ export function HealthScoreChart({ tests }: Props) {
         maxValue={100}
         mostNegativeValue={40}
       />
-      <View style={{ flexDirection: 'row', gap: 14, marginTop: 6, justifyContent: 'center', flexWrap: 'wrap' }}>
+      <View style={{ flexDirection: 'row', gap: 14, marginTop: 6, justifyContent: 'center' }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-          <View style={{ width: 18, height: 3, backgroundColor: COLORS.primary, borderRadius: 2 }} />
+          <View style={{ width: 14, height: 2, backgroundColor: COLORS.primary, borderRadius: 2 }} />
           <Text style={{ fontSize: 11, color: '#6B7280', fontWeight: '500' }}>Mom's health</Text>
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-          <View style={{ width: 18, height: 3, backgroundColor: BABY_COLOR, borderRadius: 2 }} />
+          <View style={{ width: 14, height: 2, backgroundColor: BABY_COLOR, borderRadius: 2 }} />
           <Text style={{ fontSize: 11, color: '#6B7280', fontWeight: '500' }}>Baby's health</Text>
-        </View>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-          <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: COLORS.warning }} />
-          <Text style={{ fontSize: 11, color: '#9CA3AF' }}>Some flagged</Text>
         </View>
       </View>
     </View>

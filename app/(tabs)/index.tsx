@@ -204,14 +204,14 @@ export default function HomeScreen() {
             percent={hydrationScore}
             label="Hydration"
             color="#7BAAA3"
-            size={110}
+            size={90}
           />
           <View style={{ width: 1, backgroundColor: COLORS.border }} />
           <CircleGraph
             percent={healthScore}
             label="Health Score"
             color={COLORS.primary}
-            size={110}
+            size={90}
           />
         </View>
 
