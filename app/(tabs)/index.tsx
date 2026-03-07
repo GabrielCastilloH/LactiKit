@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, ScrollView, Modal } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { router } from 'expo-router';
@@ -131,6 +131,18 @@ function getDetailedAdvice(test: TestResult | null): DetailedAdvice {
   };
 }
 
+const TEST_INTERVAL_DAYS = 7;
+
+function getNextTestInfo(tests: TestResult[]): { daysUntil: number } | null {
+  if (tests.length === 0) return null;
+  const lastDate = new Date(tests[0].date);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  lastDate.setHours(0, 0, 0, 0);
+  const daysSince = Math.floor((today.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24));
+  return { daysUntil: Math.max(0, TEST_INTERVAL_DAYS - daysSince) };
+}
+
 function getHydrationScore(test: TestResult | null): number {
   if (!test) return 0;
   const hydrationMarker = test.biomarkers.find(
@@ -147,16 +159,108 @@ export default function HomeScreen() {
   const healthScore = getHealthScore(latestTest);
   const hydrationScore = getHydrationScore(latestTest);
   const tabBarHeight = useBottomTabBarHeight();
-
+  const nextTest = getNextTestInfo(tests);
+  const [nextTestModalVisible, setNextTestModalVisible] = useState(false);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.background }}>
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: tabBarHeight + 16 }} showsVerticalScrollIndicator={false}>
         {/* Header */}
-        <View style={{ paddingTop: 20, paddingBottom: 16 }}>
-          <Text style={{ fontSize: 28, fontWeight: '800', color: COLORS.primary }}>LactiKit</Text>
-          <Text style={{ fontSize: 12, color: '#9CA3AF', marginTop: 2 }}>Baby & Maternal Health Tracker</Text>
+        <View style={{ paddingTop: 20, paddingBottom: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+          <View>
+            <Text style={{ fontSize: 28, fontWeight: '800', color: COLORS.primary }}>LactiKit</Text>
+            <Text style={{ fontSize: 12, color: '#9CA3AF', marginTop: 2 }}>Baby & Maternal Health Tracker</Text>
+          </View>
+          {nextTest && (
+            <TouchableOpacity
+              onPress={() => setNextTestModalVisible(true)}
+              activeOpacity={0.75}
+              style={{
+                backgroundColor: COLORS.primary + '18',
+                borderRadius: 12,
+                paddingHorizontal: 10,
+                paddingVertical: 6,
+                borderWidth: 1,
+                borderColor: COLORS.primary + '40',
+                alignItems: 'center',
+              }}
+            >
+              <Text style={{ fontSize: 10, fontWeight: '600', color: COLORS.primary }}>Next test in</Text>
+              <Text style={{ fontSize: 16, fontWeight: '800', color: COLORS.primary, lineHeight: 20 }}>
+                {nextTest.daysUntil}d
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
+
+        {/* Next Test Modal */}
+        <Modal
+          visible={nextTestModalVisible}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setNextTestModalVisible(false)}
+        >
+          <TouchableOpacity
+            style={{ flex: 1, backgroundColor: '#00000044', justifyContent: 'center', alignItems: 'center' }}
+            activeOpacity={1}
+            onPress={() => setNextTestModalVisible(false)}
+          >
+            <TouchableOpacity activeOpacity={1} onPress={() => {}}>
+              <View
+                style={{
+                  backgroundColor: COLORS.surface,
+                  borderRadius: 20,
+                  padding: 28,
+                  marginHorizontal: 32,
+                  alignItems: 'center',
+                  shadowColor: '#000',
+                  shadowOffset: { width: 0, height: 8 },
+                  shadowOpacity: 0.12,
+                  shadowRadius: 24,
+                  elevation: 8,
+                  borderWidth: 1,
+                  borderColor: COLORS.border,
+                }}
+              >
+                <View
+                  style={{
+                    width: 52,
+                    height: 52,
+                    borderRadius: 26,
+                    backgroundColor: COLORS.primary + '18',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginBottom: 16,
+                  }}
+                >
+                  <Ionicons name="calendar-outline" size={26} color={COLORS.primary} />
+                </View>
+                <Text style={{ fontSize: 16, fontWeight: '700', color: '#111827', marginBottom: 8, textAlign: 'center' }}>
+                  Upcoming Test
+                </Text>
+                <Text style={{ fontSize: 14, color: '#6B7280', textAlign: 'center', lineHeight: 22 }}>
+                  You should take your next tests in{' '}
+                  <Text style={{ fontWeight: '700', color: COLORS.primary }}>
+                    {nextTest.daysUntil === 0 ? 'today' : `${nextTest.daysUntil} day${nextTest.daysUntil === 1 ? '' : 's'}`}
+                  </Text>
+                  {nextTest.daysUntil > 0 ? '.' : ' — it\'s time to scan!'}
+                </Text>
+                <TouchableOpacity
+                  onPress={() => setNextTestModalVisible(false)}
+                  style={{
+                    marginTop: 20,
+                    backgroundColor: COLORS.primary,
+                    borderRadius: 12,
+                    paddingHorizontal: 28,
+                    paddingVertical: 10,
+                  }}
+                >
+                  <Text style={{ fontSize: 14, fontWeight: '700', color: '#FFFFFF' }}>Got it</Text>
+                </TouchableOpacity>
+              </View>
+            </TouchableOpacity>
+          </TouchableOpacity>
+        </Modal>
 
         {/* Alert / Advice Card */}
         <View
