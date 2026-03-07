@@ -2,18 +2,25 @@ import React, { useState, useCallback } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useFocusEffect } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { ScanOverlay } from '../../components/scan/ScanOverlay';
 import { AnalyzingModal } from '../../components/scan/AnalyzingModal';
 import { useAnalyzing } from '../../hooks/useAnalyzing';
 import { captureRef } from '../../utils/cameraCapture';
-import { COLORS } from '../../lib/constants';
+import { COLORS, SCAN_RESULT } from '../../lib/constants';
+import { useScanHistory } from '../../context/ScanHistoryContext';
 
 export default function ScanScreen() {
   const [permission, requestPermission] = useCameraPermissions();
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const { addScan } = useScanHistory();
 
-  useAnalyzing(isAnalyzing);
+  const handleComplete = useCallback(() => {
+    addScan(SCAN_RESULT);
+    router.replace('/(tabs)/');
+  }, [addScan]);
+
+  useAnalyzing(isAnalyzing, handleComplete);
 
   useFocusEffect(
     useCallback(() => {

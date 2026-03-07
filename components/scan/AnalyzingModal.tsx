@@ -60,7 +60,7 @@ export function AnalyzingModal({ visible }: Props) {
       <Text className="text-white text-2xl font-semibold mb-2">
         Analyzing{dots}
       </Text>
-      <Text className="text-gray-400 text-sm">Powered by NurtureScan AI</Text>
+      <Text className="text-gray-400 text-sm">Powered by LactiKit AI</Text>
     </View>
   );
 }

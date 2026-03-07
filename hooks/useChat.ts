@@ -6,7 +6,7 @@ import { SYSTEM_PROMPT } from '../lib/systemPrompt';
 const INITIAL_MESSAGE: Message = {
   id: '1',
   role: 'assistant',
-  content: "Hello! I'm Nurse Maya. I've reviewed your NurtureScan results showing low Iron and Vitamin B12 levels. I'd like to ask you a couple of questions to better understand your situation. How have you been feeling lately? Are you experiencing any fatigue, dizziness, or weakness?",
+  content: "Hello! I'm Nurse Maya. I've reviewed your LactiKit results showing low Iron and Vitamin B12 levels. I'd like to ask you a couple of questions to better understand your situation. How have you been feeling lately? Are you experiencing any fatigue, dizziness, or weakness?",
   timestamp: new Date(),
 };
 

@@ -4,6 +4,7 @@ import { router } from 'expo-router';
 import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
 import { COLORS } from '../../lib/constants';
+import { useScanHistory } from '../../context/ScanHistoryContext';
 
 const NEXT_STEPS = [
   {
@@ -23,20 +24,9 @@ const NEXT_STEPS = [
   },
 ];
 
-const PAST_SCANS = [
-  {
-    date: 'Mar 5, 2026',
-    deficiencies: ['Iron', 'Vitamin B12'],
-    allNormal: false,
-  },
-  {
-    date: 'Feb 28, 2026',
-    deficiencies: ['Calcium', 'Vitamin D'],
-    allNormal: true,
-  },
-];
-
 export default function HomeScreen() {
+  const { scans } = useScanHistory();
+
   return (
     <SafeAreaView className="flex-1" style={{ backgroundColor: COLORS.background }}>
       <ScrollView className="flex-1 px-5" showsVerticalScrollIndicator={false}>
@@ -77,29 +67,56 @@ export default function HomeScreen() {
         {/* Past Scans */}
         <View className="mb-8">
           <Text className="text-base font-semibold text-gray-700 mb-3">Past Scans</Text>
-          {PAST_SCANS.map((scan, index) => (
-            <TouchableOpacity
-              key={index}
-              activeOpacity={0.75}
-              onPress={() => router.push('/(tabs)/results')}
+          {scans.length === 0 ? (
+            <View
+              className="rounded-2xl p-6 items-center"
+              style={{
+                borderWidth: 1.5,
+                borderColor: COLORS.border,
+                borderStyle: 'dashed',
+              }}
             >
-              <Card className="mb-2">
-                <View className="flex-row items-center justify-between mb-2">
-                  <Text className="text-sm font-semibold text-gray-800">Scan Results</Text>
-                  <Text className="text-xs text-gray-400">{scan.date}</Text>
-                </View>
-                {scan.allNormal ? (
-                  <Text className="text-xs text-gray-500">All markers normal</Text>
-                ) : (
-                  <View className="flex-row flex-wrap gap-2">
-                    {scan.deficiencies.map((d) => (
-                      <Badge key={d} label={d} variant="warning" />
-                    ))}
-                  </View>
-                )}
-              </Card>
-            </TouchableOpacity>
-          ))}
+              <Text className="text-sm font-semibold text-gray-500 mb-1">No scans yet</Text>
+              <Text className="text-xs text-gray-400 text-center">
+                Tap the scan button to get started
+              </Text>
+            </View>
+          ) : (
+            scans.map((scan) => {
+              const flaggedNutrients = scan.deficiencies
+                .filter((d) => d.level !== 'normal')
+                .map((d) => d.nutrient);
+              const allNormal = flaggedNutrients.length === 0;
+              const formattedDate = new Date(scan.date).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+              });
+              return (
+                <TouchableOpacity
+                  key={scan.id}
+                  activeOpacity={0.75}
+                  onPress={() => router.push({ pathname: '/results', params: { scanId: scan.id } })}
+                >
+                  <Card className="mb-2">
+                    <View className="flex-row items-center justify-between mb-2">
+                      <Text className="text-sm font-semibold text-gray-800">Scan Results</Text>
+                      <Text className="text-xs text-gray-400">{formattedDate}</Text>
+                    </View>
+                    {allNormal ? (
+                      <Text className="text-xs text-gray-500">All markers normal</Text>
+                    ) : (
+                      <View className="flex-row flex-wrap gap-2">
+                        {flaggedNutrients.map((n) => (
+                          <Badge key={n} label={n} variant="warning" />
+                        ))}
+                      </View>
+                    )}
+                  </Card>
+                </TouchableOpacity>
+              );
+            })
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>
