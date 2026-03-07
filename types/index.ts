@@ -7,18 +7,33 @@ export interface Message {
   timestamp: Date;
 }
 
-export type Deficiency = {
-  nutrient: string;
+export type ChatPhase = 'questioning' | 'recipe' | 'referral';
+
+export type TestType = 'mom_urine' | 'breastmilk' | 'baby_urine';
+
+export type BiomarkerName =
+  | 'leukocytes_nitrites'
+  | 'specific_gravity'
+  | 'ketones'
+  | 'vitamin_c'
+  | 'protein'
+  | 'calcium_magnesium'
+  | 'ph_level'
+  | 'alcohol';
+
+export interface Biomarker {
+  name: BiomarkerName;
+  displayName: string;
   unit: string;
   detected: number;
   normalMin: number;
   normalMax: number;
   level: 'low' | 'normal' | 'high';
-};
-
-export interface ScanResult {
-  date: string;
-  deficiencies: Deficiency[];
 }
 
-export type ChatPhase = 'questioning' | 'recipe' | 'referral';
+export interface TestResult {
+  id: string;
+  date: string;
+  testType: TestType;
+  biomarkers: Biomarker[];
+}

@@ -11,7 +11,7 @@ export default function RootLayout() {
         <ScanHistoryProvider>
           <Stack screenOptions={{ headerShown: false }}>
             <Stack.Screen name="(tabs)" />
-            <Stack.Screen name="results" />
+            <Stack.Screen name="test/[id]" />
           </Stack>
         </ScanHistoryProvider>
       </SafeAreaProvider>

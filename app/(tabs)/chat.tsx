@@ -9,7 +9,9 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useLocalSearchParams } from 'expo-router';
 import { useChat } from '../../hooks/useChat';
+import { useTestHistory } from '../../context/ScanHistoryContext';
 import { MessageBubble } from '../../components/chat/MessageBubble';
 import { TypingIndicator } from '../../components/chat/TypingIndicator';
 import { ChatInput } from '../../components/chat/ChatInput';
@@ -19,23 +21,28 @@ import { COLORS } from '../../lib/constants';
 const RECIPES = [
   {
     emoji: '🥣',
-    name: 'Iron-Rich Lentil Soup',
-    description: 'Red lentils, spinach & cumin • Rich in iron & folate',
+    name: 'Hydration Lentil Soup',
+    description: 'Red lentils, celery & parsley • Rich in protein & fluid balance',
   },
   {
-    emoji: '🐟',
-    name: 'B12 Salmon Bowl',
-    description: 'Grilled salmon, brown rice & edamame • High in B12 & omega-3',
+    emoji: '🫐',
+    name: 'Vitamin C Berry Bowl',
+    description: 'Mixed berries, kiwi & orange • Vitamin C powerhouse',
   },
   {
     emoji: '🥚',
-    name: 'Spinach Egg Scramble',
-    description: 'Eggs, baby spinach & feta • Iron + B12 powerhouse',
+    name: 'Protein Egg Scramble',
+    description: 'Eggs, spinach & feta • Calcium + protein boost',
   },
 ];
 
 export default function ChatScreen() {
-  const { messages, sendMessage, clearChat, isStreaming, chatPhase, clinicalSummary, streamingText } = useChat();
+  const { testId } = useLocalSearchParams<{ testId?: string }>();
+  const { getTest } = useTestHistory();
+  const testContext = testId ? (getTest(testId) ?? null) : null;
+
+  const { messages, sendMessage, clearChat, isStreaming, chatPhase, clinicalSummary, streamingText } =
+    useChat(testContext);
   const flatListRef = useRef<FlatList<Message>>(null);
 
   useEffect(() => {
@@ -47,12 +54,7 @@ export default function ChatScreen() {
 
   const streamingMessage: Message | null =
     isStreaming && streamingText
-      ? {
-          id: 'streaming',
-          role: 'assistant',
-          content: streamingText,
-          timestamp: new Date(),
-        }
+      ? { id: 'streaming', role: 'assistant', content: streamingText, timestamp: new Date() }
       : null;
 
   const renderItem = ({ item }: { item: Message }) => <MessageBubble message={item} />;
@@ -63,27 +65,27 @@ export default function ChatScreen() {
       {isStreaming && !streamingText && <TypingIndicator />}
 
       {chatPhase === 'recipe' && (
-        <View className="mt-4 mb-2">
-          <Text className="text-sm font-semibold text-gray-500 mb-3 px-1">
-            Recommended Recipes for You
+        <View style={{ marginTop: 16, marginBottom: 8 }}>
+          <Text style={{ fontSize: 13, fontWeight: '600', color: '#6B7280', marginBottom: 12, paddingHorizontal: 4 }}>
+            Recommended for You
           </Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             {RECIPES.map((recipe, index) => (
               <View
                 key={index}
-                className="rounded-2xl p-4 mr-3"
                 style={{
                   width: 200,
                   backgroundColor: COLORS.surface,
                   borderWidth: 1,
                   borderColor: COLORS.border,
+                  borderRadius: 16,
+                  padding: 14,
+                  marginRight: 12,
                 }}
               >
-                <Text style={{ fontSize: 36 }} className="mb-2">
-                  {recipe.emoji}
-                </Text>
-                <Text className="font-bold text-gray-800 text-sm mb-1">{recipe.name}</Text>
-                <Text className="text-gray-500 text-xs leading-5">{recipe.description}</Text>
+                <Text style={{ fontSize: 36, marginBottom: 8 }}>{recipe.emoji}</Text>
+                <Text style={{ fontWeight: '700', color: '#111827', fontSize: 13, marginBottom: 4 }}>{recipe.name}</Text>
+                <Text style={{ color: '#6B7280', fontSize: 12, lineHeight: 18 }}>{recipe.description}</Text>
               </View>
             ))}
           </ScrollView>
@@ -92,31 +94,31 @@ export default function ChatScreen() {
 
       {chatPhase === 'referral' && (
         <View
-          className="mt-4 mb-2 rounded-2xl p-4"
           style={{
+            marginTop: 16,
+            marginBottom: 8,
+            borderRadius: 16,
+            padding: 16,
             borderWidth: 1.5,
             borderColor: COLORS.danger,
             backgroundColor: '#FFF5F5',
           }}
         >
-          <Text className="font-bold text-base mb-1" style={{ color: COLORS.danger }}>
+          <Text style={{ fontWeight: '700', fontSize: 15, color: COLORS.danger, marginBottom: 4 }}>
             ⚕ Clinical Referral Recommended
           </Text>
-          <Text className="text-gray-600 text-sm mb-3">
+          <Text style={{ color: '#6B7280', fontSize: 13, marginBottom: 12 }}>
             Nurse Maya recommends consulting a healthcare provider
           </Text>
           {clinicalSummary.length > 0 && (
-            <View className="rounded-xl p-3 mb-3" style={{ backgroundColor: COLORS.tabBar }}>
-              <Text className="text-gray-700 text-sm leading-5">{clinicalSummary}</Text>
+            <View style={{ backgroundColor: COLORS.tabBar, borderRadius: 10, padding: 12, marginBottom: 12 }}>
+              <Text style={{ color: '#374151', fontSize: 13, lineHeight: 20 }}>{clinicalSummary}</Text>
             </View>
           )}
           <TouchableOpacity
-            className="rounded-xl py-3 items-center"
-            style={{ borderWidth: 1.5, borderColor: COLORS.danger }}
+            style={{ borderWidth: 1.5, borderColor: COLORS.danger, borderRadius: 10, paddingVertical: 10, alignItems: 'center' }}
           >
-            <Text className="font-semibold text-sm" style={{ color: COLORS.danger }}>
-              Find a Clinic
-            </Text>
+            <Text style={{ fontWeight: '600', fontSize: 13, color: COLORS.danger }}>Find a Clinic</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -124,36 +126,39 @@ export default function ChatScreen() {
   );
 
   return (
-    <SafeAreaView className="flex-1" style={{ backgroundColor: COLORS.background }} edges={['top']}>
-      <KeyboardAvoidingView
-        className="flex-1"
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      >
+    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.background }} edges={['top']}>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         {/* Header */}
         <View
-          className="flex-row items-center px-4 py-3"
           style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            paddingHorizontal: 16,
+            paddingVertical: 12,
             backgroundColor: COLORS.background,
             borderBottomWidth: 1,
             borderBottomColor: COLORS.border,
           }}
         >
           <View
-            className="w-10 h-10 rounded-full items-center justify-center mr-3"
-            style={{ backgroundColor: COLORS.tabBar }}
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: 20,
+              backgroundColor: COLORS.tabBar,
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginRight: 12,
+            }}
           >
             <Text style={{ fontSize: 20 }}>👩‍⚕️</Text>
           </View>
-          <View className="flex-1">
-            <Text className="font-bold text-base" style={{ color: COLORS.primary }}>
-              Nurse Maya
-            </Text>
-            <Text className="text-xs text-gray-500">AI Maternal Health Nurse</Text>
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontWeight: '700', fontSize: 15, color: COLORS.primary }}>Nurse Maya</Text>
+            <Text style={{ fontSize: 11, color: '#6B7280' }}>AI Maternal Health Nurse</Text>
           </View>
           <TouchableOpacity onPress={clearChat} hitSlop={8}>
-            <Text className="text-xs font-semibold" style={{ color: COLORS.primary }}>
-              Clear
-            </Text>
+            <Text style={{ fontSize: 12, fontWeight: '600', color: COLORS.primary }}>Clear</Text>
           </TouchableOpacity>
         </View>
 
@@ -170,7 +175,6 @@ export default function ChatScreen() {
           showsVerticalScrollIndicator={false}
         />
 
-        {/* Input */}
         <SafeAreaView edges={['bottom']} style={{ backgroundColor: COLORS.background }}>
           <ChatInput onSend={sendMessage} disabled={isStreaming} />
         </SafeAreaView>

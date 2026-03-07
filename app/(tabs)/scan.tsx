@@ -7,18 +7,51 @@ import { ScanOverlay } from '../../components/scan/ScanOverlay';
 import { AnalyzingModal } from '../../components/scan/AnalyzingModal';
 import { useAnalyzing } from '../../hooks/useAnalyzing';
 import { captureRef } from '../../utils/cameraCapture';
-import { COLORS, SCAN_RESULT } from '../../lib/constants';
-import { useScanHistory } from '../../context/ScanHistoryContext';
+import { COLORS } from '../../lib/constants';
+import { useTestHistory } from '../../context/ScanHistoryContext';
 
 export default function ScanScreen() {
   const [permission, requestPermission] = useCameraPermissions();
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const { addScan } = useScanHistory();
+  const { addTest } = useTestHistory();
 
   const handleComplete = useCallback(() => {
-    addScan(SCAN_RESULT);
+    const date = new Date().toISOString().split('T')[0];
+    addTest({
+      date,
+      testType: 'mom_urine',
+      biomarkers: [
+        {
+          name: 'leukocytes_nitrites',
+          displayName: 'Leukocytes/Nitrites',
+          unit: 'LEU/µL',
+          detected: 15,
+          normalMin: 0,
+          normalMax: 25,
+          level: 'normal',
+        },
+        {
+          name: 'specific_gravity',
+          displayName: 'Specific Gravity',
+          unit: 'g/mL',
+          detected: 1.015,
+          normalMin: 1.005,
+          normalMax: 1.025,
+          level: 'normal',
+        },
+        {
+          name: 'vitamin_c',
+          displayName: 'Vitamin C',
+          unit: 'mg/dL',
+          detected: 8,
+          normalMin: 10,
+          normalMax: 40,
+          level: 'low',
+        },
+      ],
+    });
     router.replace('/(tabs)/');
-  }, [addScan]);
+  }, [addTest]);
 
   useAnalyzing(isAnalyzing, handleComplete);
 
@@ -30,38 +63,32 @@ export default function ScanScreen() {
   );
 
   if (!permission) {
-    return <View className="flex-1" style={{ backgroundColor: COLORS.background }} />;
+    return <View style={{ flex: 1, backgroundColor: COLORS.background }} />;
   }
 
   if (!permission.granted) {
     return (
-      <SafeAreaView className="flex-1 items-center justify-center" style={{ backgroundColor: COLORS.background }}>
-        <Text className="text-lg font-semibold text-center mb-2" style={{ color: '#1F2937' }}>
+      <SafeAreaView style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: COLORS.background }}>
+        <Text style={{ fontSize: 18, fontWeight: '600', textAlign: 'center', marginBottom: 8, color: '#1F2937' }}>
           Camera access needed
         </Text>
-        <Text className="text-sm text-center mb-6 px-8" style={{ color: '#6B7280' }}>
-          LactiKit needs camera access to scan your milk sample.
+        <Text style={{ fontSize: 14, textAlign: 'center', marginBottom: 24, paddingHorizontal: 32, color: '#6B7280' }}>
+          LactiKit needs camera access to scan your test strip.
         </Text>
         <TouchableOpacity
           onPress={requestPermission}
-          className="rounded-xl px-6 py-3"
-          style={{ backgroundColor: COLORS.primary }}
+          style={{ backgroundColor: COLORS.primary, borderRadius: 12, paddingHorizontal: 24, paddingVertical: 12 }}
         >
-          <Text className="text-white font-semibold text-base">Grant Permission</Text>
+          <Text style={{ color: '#FFF', fontWeight: '600', fontSize: 16 }}>Grant Permission</Text>
         </TouchableOpacity>
       </SafeAreaView>
     );
   }
 
   return (
-    <View className="flex-1 bg-black">
-      {/* Full-screen camera */}
-      <CameraView className="flex-1" facing="back" />
-
-      {/* Scan overlay (dark borders + corner brackets + scan line) */}
+    <View style={{ flex: 1, backgroundColor: '#000' }}>
+      <CameraView style={{ flex: 1 }} facing="back" />
       <ScanOverlay />
-
-      {/* Analyzing modal — rendered on top of everything */}
       <AnalyzingModal visible={isAnalyzing} />
     </View>
   );

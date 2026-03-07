@@ -1,123 +1,213 @@
+import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
-import { Card } from '../../components/ui/Card';
-import { Badge } from '../../components/ui/Badge';
-import { COLORS } from '../../lib/constants';
-import { useScanHistory } from '../../context/ScanHistoryContext';
+import { COLORS, TEST_TYPE_LABELS } from '../../lib/constants';
+import { useTestHistory } from '../../context/ScanHistoryContext';
+import { CircleGraph } from '../../components/charts/CircleGraph';
+import { BiomarkerLineChart } from '../../components/charts/BiomarkerLineChart';
+import { Ionicons } from '@expo/vector-icons';
+import { TestResult } from '../../types';
 
-const NEXT_STEPS = [
-  {
-    emoji: '💉',
-    title: 'Schedule B12 Check',
-    description: 'Book a follow-up blood test to monitor your Vitamin B12 levels.',
-  },
-  {
-    emoji: '🥬',
-    title: 'Iron-Rich Meals This Week',
-    description: 'Add lentils, spinach, and lean red meat to your daily meals.',
-  },
-  {
-    emoji: '💧',
-    title: 'Log Your Water Intake',
-    description: 'Stay hydrated — aim for 8–10 glasses per day while breastfeeding.',
-  },
-];
+function getAlertText(test: TestResult | null): string {
+  if (!test) return 'No test results yet. Use the scan button below to run your first test.';
+  const flagged = test.biomarkers.filter(b => b.level !== 'normal');
+  if (flagged.length === 0) return 'All markers from your latest test are within normal range. Keep it up!';
+  const names = flagged.map(b => b.displayName).join(', ');
+  const action = test.testType === 'breastmilk'
+    ? 'Consider increasing protein-rich foods and staying well hydrated.'
+    : 'Make sure you\'re drinking enough water and eating a balanced diet.';
+  return `Your latest ${TEST_TYPE_LABELS[test.testType]} test flagged: ${names}. ${action}`;
+}
+
+function getHealthScore(test: TestResult | null): number {
+  if (!test) return 0;
+  const normal = test.biomarkers.filter(b => b.level === 'normal').length;
+  return Math.round((normal / test.biomarkers.length) * 100);
+}
+
+function getHydrationScore(test: TestResult | null): number {
+  if (!test) return 0;
+  const hydrationMarker = test.biomarkers.find(
+    b => b.name === 'specific_gravity' || b.name === 'ketones'
+  );
+  if (!hydrationMarker) return 72;
+  return hydrationMarker.level === 'normal' ? 85 : hydrationMarker.level === 'high' ? 45 : 62;
+}
 
 export default function HomeScreen() {
-  const { scans } = useScanHistory();
+  const { tests } = useTestHistory();
+  const latestTest = tests[0] ?? null;
+  const alertText = getAlertText(latestTest);
+  const healthScore = getHealthScore(latestTest);
+  const hydrationScore = getHydrationScore(latestTest);
+
+  // Find a flagged biomarker to chart trend across tests
+  const trendMarker = latestTest?.biomarkers.find(b => b.level !== 'normal')?.name
+    ?? latestTest?.biomarkers[0]?.name
+    ?? null;
 
   return (
-    <SafeAreaView className="flex-1" style={{ backgroundColor: COLORS.background }}>
-      <ScrollView className="flex-1 px-5" showsVerticalScrollIndicator={false}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.background }}>
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingHorizontal: 16 }} showsVerticalScrollIndicator={false}>
         {/* Header */}
-        <View className="pt-6 pb-4">
-          <Text className="text-base text-gray-500 mb-1">Good morning 👋</Text>
-          <Text className="text-3xl font-bold" style={{ color: COLORS.primary }}>
-            LactiKit
-          </Text>
-          <Text className="text-sm text-gray-400 mt-1">Maternal Nutritional Health Triage</Text>
+        <View style={{ paddingTop: 20, paddingBottom: 16 }}>
+          <Text style={{ fontSize: 12, color: '#6B7280', marginBottom: 2 }}>Good morning</Text>
+          <Text style={{ fontSize: 28, fontWeight: '800', color: COLORS.primary }}>LactiKit</Text>
+          <Text style={{ fontSize: 12, color: '#9CA3AF', marginTop: 2 }}>Baby & Maternal Health Tracker</Text>
         </View>
 
-        {/* AI Next Steps */}
-        <View className="mb-6">
-          <Text className="text-base font-semibold text-gray-700 mb-3">AI Recommendations</Text>
-          {NEXT_STEPS.map((step, index) => (
-            <TouchableOpacity
-              key={index}
-              activeOpacity={0.75}
-              className="flex-row items-start rounded-2xl p-4 mb-2"
+        {/* Alert / Advice Card */}
+        <View
+          style={{
+            backgroundColor: COLORS.surface,
+            borderRadius: 16,
+            padding: 16,
+            marginBottom: 20,
+            borderLeftWidth: 4,
+            borderLeftColor: latestTest && latestTest.biomarkers.some(b => b.level !== 'normal')
+              ? COLORS.warning
+              : '#22C55E',
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.06,
+            shadowRadius: 8,
+            elevation: 2,
+          }}
+        >
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+            <Ionicons name="alert-circle-outline" size={18} color={COLORS.warning} style={{ marginRight: 6 }} />
+            <Text style={{ fontSize: 13, fontWeight: '700', color: '#111827' }}>Health Advice</Text>
+          </View>
+          <Text style={{ fontSize: 13, color: '#374151', lineHeight: 20 }}>{alertText}</Text>
+        </View>
+
+        {/* Graphs Row — Donut charts */}
+        <Text style={{ fontSize: 15, fontWeight: '700', color: '#111827', marginBottom: 14 }}>Health Overview</Text>
+        <View
+          style={{
+            backgroundColor: COLORS.surface,
+            borderRadius: 16,
+            padding: 20,
+            marginBottom: 20,
+            flexDirection: 'row',
+            justifyContent: 'space-around',
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.06,
+            shadowRadius: 8,
+            elevation: 2,
+          }}
+        >
+          <CircleGraph
+            percent={hydrationScore}
+            label="Hydration"
+            color="#38BDF8"
+            size={110}
+          />
+          <View style={{ width: 1, backgroundColor: COLORS.border }} />
+          <CircleGraph
+            percent={healthScore}
+            label="Health Score"
+            color={COLORS.primary}
+            size={110}
+          />
+        </View>
+
+        {/* Line Chart — Biomarker Trend */}
+        {trendMarker && tests.length >= 1 && (
+          <>
+            <Text style={{ fontSize: 15, fontWeight: '700', color: '#111827', marginBottom: 14 }}>Biomarker Trend</Text>
+            <View
               style={{
                 backgroundColor: COLORS.surface,
-                borderWidth: 1,
-                borderColor: COLORS.border,
+                borderRadius: 16,
+                padding: 16,
+                marginBottom: 20,
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.06,
+                shadowRadius: 8,
+                elevation: 2,
               }}
             >
-              <Text style={{ fontSize: 28 }} className="mr-3">
-                {step.emoji}
-              </Text>
-              <View className="flex-1">
-                <Text className="font-semibold text-gray-800 text-sm mb-0.5">{step.title}</Text>
-                <Text className="text-gray-500 text-xs leading-5">{step.description}</Text>
-              </View>
-            </TouchableOpacity>
-          ))}
-        </View>
-
-        {/* Past Scans */}
-        <View className="mb-8">
-          <Text className="text-base font-semibold text-gray-700 mb-3">Past Scans</Text>
-          {scans.length === 0 ? (
-            <View
-              className="rounded-2xl p-6 items-center"
-              style={{
-                borderWidth: 1.5,
-                borderColor: COLORS.border,
-                borderStyle: 'dashed',
-              }}
-            >
-              <Text className="text-sm font-semibold text-gray-500 mb-1">No scans yet</Text>
-              <Text className="text-xs text-gray-400 text-center">
-                Tap the scan button to get started
-              </Text>
+              <BiomarkerLineChart tests={tests} biomarkerName={trendMarker} />
             </View>
-          ) : (
-            scans.map((scan) => {
-              const flaggedNutrients = scan.deficiencies
-                .filter((d) => d.level !== 'normal')
-                .map((d) => d.nutrient);
-              const allNormal = flaggedNutrients.length === 0;
-              const formattedDate = new Date(scan.date).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric',
-              });
-              return (
-                <TouchableOpacity
-                  key={scan.id}
-                  activeOpacity={0.75}
-                  onPress={() => router.push({ pathname: '/results', params: { scanId: scan.id } })}
-                >
-                  <Card className="mb-2">
-                    <View className="flex-row items-center justify-between mb-2">
-                      <Text className="text-sm font-semibold text-gray-800">Scan Results</Text>
-                      <Text className="text-xs text-gray-400">{formattedDate}</Text>
+          </>
+        )}
+
+        {/* Past Tests */}
+        <Text style={{ fontSize: 15, fontWeight: '700', color: '#111827', marginBottom: 14 }}>Past Tests</Text>
+        {tests.length === 0 ? (
+          <View
+            style={{
+              borderWidth: 1.5,
+              borderColor: COLORS.border,
+              borderStyle: 'dashed',
+              borderRadius: 16,
+              padding: 24,
+              alignItems: 'center',
+              marginBottom: 24,
+            }}
+          >
+            <Text style={{ fontSize: 13, fontWeight: '600', color: '#6B7280', marginBottom: 4 }}>No tests yet</Text>
+            <Text style={{ fontSize: 12, color: '#9CA3AF', textAlign: 'center' }}>
+              Tap the scan button below to run your first test
+            </Text>
+          </View>
+        ) : (
+          tests.map(test => {
+            const flagged = test.biomarkers.filter(b => b.level !== 'normal');
+            const date = new Date(test.date).toLocaleDateString('en-US', {
+              month: 'short', day: 'numeric', year: 'numeric',
+            });
+            return (
+              <TouchableOpacity
+                key={test.id}
+                activeOpacity={0.8}
+                onPress={() => router.push({ pathname: '/test/[id]', params: { id: test.id } })}
+                style={{
+                  backgroundColor: COLORS.surface,
+                  borderRadius: 14,
+                  padding: 14,
+                  marginBottom: 10,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  borderWidth: 1,
+                  borderColor: COLORS.border,
+                  shadowColor: '#000',
+                  shadowOffset: { width: 0, height: 1 },
+                  shadowOpacity: 0.04,
+                  shadowRadius: 4,
+                  elevation: 1,
+                }}
+              >
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 14, fontWeight: '600', color: '#111827', marginBottom: 3 }}>
+                    {TEST_TYPE_LABELS[test.testType]}
+                  </Text>
+                  <Text style={{ fontSize: 12, color: '#9CA3AF' }}>{date}</Text>
+                </View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                  {flagged.length > 0 ? (
+                    <View style={{ backgroundColor: COLORS.warning + '22', borderRadius: 9999, paddingHorizontal: 8, paddingVertical: 3 }}>
+                      <Text style={{ fontSize: 11, fontWeight: '700', color: COLORS.warning }}>
+                        {flagged.length} flagged
+                      </Text>
                     </View>
-                    {allNormal ? (
-                      <Text className="text-xs text-gray-500">All markers normal</Text>
-                    ) : (
-                      <View className="flex-row flex-wrap gap-2">
-                        {flaggedNutrients.map((n) => (
-                          <Badge key={n} label={n} variant="warning" />
-                        ))}
-                      </View>
-                    )}
-                  </Card>
-                </TouchableOpacity>
-              );
-            })
-          )}
-        </View>
+                  ) : (
+                    <View style={{ backgroundColor: '#D1FAE5', borderRadius: 9999, paddingHorizontal: 8, paddingVertical: 3 }}>
+                      <Text style={{ fontSize: 11, fontWeight: '700', color: '#059669' }}>All normal</Text>
+                    </View>
+                  )}
+                  <Ionicons name="chevron-forward" size={16} color="#D1D5DB" />
+                </View>
+              </TouchableOpacity>
+            );
+          })
+        )}
+
+        <View style={{ height: 24 }} />
       </ScrollView>
     </SafeAreaView>
   );

@@ -1,40 +1,44 @@
 import React, { createContext, useCallback, useContext, useState } from 'react';
-import { ScanResult } from '../types';
+import { TestResult } from '../types';
+import { FAKE_TEST_RESULTS } from '../lib/constants';
 
-interface ScanEntry extends ScanResult {
-  id: string;
+interface TestHistoryContextValue {
+  tests: TestResult[];
+  addTest: (result: Omit<TestResult, 'id'>) => string;
+  getTest: (id: string) => TestResult | undefined;
+  pendingTest: TestResult | null;
+  setPendingTest: (test: TestResult | null) => void;
 }
 
-interface ScanHistoryContextValue {
-  scans: ScanEntry[];
-  addScan: (result: ScanResult) => string;
-  getScan: (id: string) => ScanEntry | undefined;
-}
-
-const ScanHistoryContext = createContext<ScanHistoryContextValue | null>(null);
+const TestHistoryContext = createContext<TestHistoryContextValue | null>(null);
 
 export function ScanHistoryProvider({ children }: { children: React.ReactNode }) {
-  const [scans, setScans] = useState<ScanEntry[]>([]);
+  const [tests, setTests] = useState<TestResult[]>(FAKE_TEST_RESULTS);
+  const [pendingTest, setPendingTest] = useState<TestResult | null>(null);
 
-  const addScan = useCallback((result: ScanResult): string => {
+  const addTest = useCallback((result: Omit<TestResult, 'id'>): string => {
     const id = Date.now().toString();
-    setScans(prev => [{ ...result, id }, ...prev]);
+    const newTest: TestResult = { ...result, id };
+    setTests(prev => [newTest, ...prev]);
     return id;
   }, []);
 
-  const getScan = useCallback((id: string): ScanEntry | undefined => {
-    return scans.find(s => s.id === id);
-  }, [scans]);
+  const getTest = useCallback((id: string): TestResult | undefined => {
+    return tests.find(t => t.id === id);
+  }, [tests]);
 
   return (
-    <ScanHistoryContext.Provider value={{ scans, addScan, getScan }}>
+    <TestHistoryContext.Provider value={{ tests, addTest, getTest, pendingTest, setPendingTest }}>
       {children}
-    </ScanHistoryContext.Provider>
+    </TestHistoryContext.Provider>
   );
 }
 
-export function useScanHistory(): ScanHistoryContextValue {
-  const ctx = useContext(ScanHistoryContext);
-  if (!ctx) throw new Error('useScanHistory must be used within ScanHistoryProvider');
+export function useTestHistory(): TestHistoryContextValue {
+  const ctx = useContext(TestHistoryContext);
+  if (!ctx) throw new Error('useTestHistory must be used within ScanHistoryProvider');
   return ctx;
 }
+
+/** @deprecated use useTestHistory */
+export const useScanHistory = useTestHistory;

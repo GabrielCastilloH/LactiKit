@@ -1,25 +1,44 @@
 import { useState, useCallback, useRef } from 'react';
-import { Message, ChatPhase } from '../types';
+import { Message, ChatPhase, TestResult } from '../types';
 import { streamChatCompletion } from '../lib/gemini';
-import { SYSTEM_PROMPT } from '../lib/systemPrompt';
+import { buildSystemPrompt } from '../lib/testPrompt';
+import { TEST_TYPE_LABELS } from '../lib/constants';
 
-const INITIAL_MESSAGE: Message = {
-  id: '1',
-  role: 'assistant',
-  content: "Hello! I'm Nurse Maya. I've reviewed your LactiKit results showing low Iron and Vitamin B12 levels. I'd like to ask you a couple of questions to better understand your situation. How have you been feeling lately? Are you experiencing any fatigue, dizziness, or weakness?",
-  timestamp: new Date(),
-};
+function buildInitialMessage(test: TestResult | null): Message {
+  let content: string;
+  if (test) {
+    const label = TEST_TYPE_LABELS[test.testType] ?? test.testType;
+    const flagged = test.biomarkers.filter(b => b.level !== 'normal');
+    if (flagged.length > 0) {
+      const names = flagged.map(b => b.displayName).join(' and ');
+      content = `Hello! I'm Nurse Maya. I've reviewed your ${label} test results — I see ${names} ${flagged.length === 1 ? 'is' : 'are'} outside the normal range. I'd like to ask a couple of questions to better understand your situation. How have you been feeling lately?`;
+    } else {
+      content = `Hello! I'm Nurse Maya. Great news — your ${label} test results look healthy across all markers! I'd still love to chat if you have any questions or concerns. How are you feeling today?`;
+    }
+  } else {
+    content = "Hello! I'm Nurse Maya, your AI maternal health assistant. I'm here to help you understand your LactiKit results and support your health journey. How are you feeling today?";
+  }
 
-export function useChat() {
-  const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE]);
+  return {
+    id: '1',
+    role: 'assistant',
+    content,
+    timestamp: new Date(),
+  };
+}
+
+export function useChat(testContext: TestResult | null = null) {
+  const initialMessage = buildInitialMessage(testContext);
+  const [messages, setMessages] = useState<Message[]>([initialMessage]);
   const [isStreaming, setIsStreaming] = useState(false);
   const [chatPhase, setChatPhase] = useState<ChatPhase>('questioning');
   const [clinicalSummary, setClinicalSummary] = useState<string>('');
   const [streamingText, setStreamingText] = useState('');
-  const assistantTurnCount = useRef(1); // starts at 1 because of initial message
+  const assistantTurnCount = useRef(1);
+  const systemPrompt = buildSystemPrompt(testContext);
 
   const clearChat = useCallback(() => {
-    setMessages([INITIAL_MESSAGE]);
+    setMessages([initialMessage]);
     setChatPhase('questioning');
     setClinicalSummary('');
     setStreamingText('');
@@ -45,7 +64,7 @@ export function useChat() {
       let accumulated = '';
       const fullResponse = await streamChatCompletion(
         updatedMessages,
-        SYSTEM_PROMPT,
+        systemPrompt,
         (chunk) => {
           accumulated += chunk;
           setStreamingText(accumulated);
@@ -64,7 +83,6 @@ export function useChat() {
       setMessages(prev => [...prev, assistantMessage]);
       setStreamingText('');
 
-      // Phase detection: after assistant has spoken 3+ times (initial + 2 follow-ups), check sentinel
       if (assistantTurnCount.current >= 3) {
         if (fullResponse.includes('CLINICAL_REFERRAL_NEEDED')) {
           const summaryMatch = fullResponse.match(/Clinical Summary:\s*([\s\S]+)/i);
@@ -87,7 +105,7 @@ export function useChat() {
     } finally {
       setIsStreaming(false);
     }
-  }, [messages, isStreaming]);
+  }, [messages, isStreaming, systemPrompt]);
 
   return {
     messages,
