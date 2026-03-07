@@ -69,12 +69,12 @@ export default function TabsLayout() {
           tabBarButton: (props) => <CenterTabButton {...props} />,
           tabBarItemStyle: { overflow: 'visible', backgroundColor: 'transparent' },
           tabBarStyle: {
-            backgroundColor: 'transparent',
-            borderTopWidth: 0,
+            backgroundColor: COLORS.tabBar,
+            borderTopWidth: 1,
+            borderTopColor: COLORS.border,
             elevation: 0,
             shadowOpacity: 0,
             overflow: 'visible',
-            position: 'absolute',
           },
         }}
       />

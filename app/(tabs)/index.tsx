@@ -5,7 +5,7 @@ import { router } from 'expo-router';
 import { COLORS, TEST_TYPE_LABELS } from '../../lib/constants';
 import { useTestHistory } from '../../context/ScanHistoryContext';
 import { CircleGraph } from '../../components/charts/CircleGraph';
-import { BiomarkerLineChart } from '../../components/charts/BiomarkerLineChart';
+import { HealthScoreChart } from '../../components/charts/HealthScoreChart';
 import { Ionicons } from '@expo/vector-icons';
 import { TestResult } from '../../types';
 
@@ -42,10 +42,6 @@ export default function HomeScreen() {
   const healthScore = getHealthScore(latestTest);
   const hydrationScore = getHydrationScore(latestTest);
 
-  // Find a flagged biomarker to chart trend across tests
-  const trendMarker = latestTest?.biomarkers.find(b => b.level !== 'normal')?.name
-    ?? latestTest?.biomarkers[0]?.name
-    ?? null;
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.background }}>
@@ -111,10 +107,10 @@ export default function HomeScreen() {
           />
         </View>
 
-        {/* Line Chart — Biomarker Trend */}
-        {trendMarker && tests.length >= 1 && (
+        {/* Line Chart — Health Score Trend */}
+        {tests.length >= 1 && (
           <>
-            <Text style={{ fontSize: 15, fontWeight: '700', color: '#111827', marginBottom: 14 }}>Biomarker Trend</Text>
+            <Text style={{ fontSize: 12, fontWeight: '600', color: '#6B7280', marginBottom: 10, textTransform: 'uppercase', letterSpacing: 0.8 }}>Wellness Trend</Text>
             <View
               style={{
                 backgroundColor: COLORS.surface,
@@ -128,7 +124,7 @@ export default function HomeScreen() {
                 elevation: 2,
               }}
             >
-              <BiomarkerLineChart tests={tests} biomarkerName={trendMarker} />
+              <HealthScoreChart tests={tests} />
             </View>
           </>
         )}
