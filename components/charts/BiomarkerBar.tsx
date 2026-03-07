@@ -24,10 +24,10 @@ export function BiomarkerBar({ biomarker }: Props) {
       <Text style={{ fontSize: 9, color, fontWeight: '700', marginBottom: 2 }}>{detected}</Text>
     )},
     { value: normalMin, label: 'Min', frontColor: '#A7F3D0', topLabelComponent: () => (
-      <Text style={{ fontSize: 9, color: '#6B7280', marginBottom: 2 }}>{normalMin}</Text>
+      <Text style={{ fontSize: 9, color: '#4B5563', marginBottom: 2 }}>{normalMin}</Text>
     )},
     { value: normalMax, label: 'Max', frontColor: '#6EE7B7', topLabelComponent: () => (
-      <Text style={{ fontSize: 9, color: '#6B7280', marginBottom: 2 }}>{normalMax}</Text>
+      <Text style={{ fontSize: 9, color: '#4B5563', marginBottom: 2 }}>{normalMax}</Text>
     )},
   ];
 
@@ -47,8 +47,8 @@ export function BiomarkerBar({ biomarker }: Props) {
         roundedBottom={false}
         hideRules={false}
         rulesColor="#F3F4F6"
-        yAxisTextStyle={{ color: '#9CA3AF', fontSize: 10 }}
-        xAxisLabelTextStyle={{ color: '#9CA3AF', fontSize: 10 }}
+        yAxisTextStyle={{ color: '#6B7280', fontSize: 10 }}
+        xAxisLabelTextStyle={{ color: '#6B7280', fontSize: 10 }}
         maxValue={maxScale}
         noOfSections={4}
         isAnimated
@@ -58,7 +58,7 @@ export function BiomarkerBar({ biomarker }: Props) {
         showLine={false}
         disableScroll
       />
-      <Text style={{ fontSize: 11, color: '#9CA3AF', marginTop: 2 }}>
+      <Text style={{ fontSize: 11, color: '#6B7280', marginTop: 2 }}>
         Normal: {normalMin}–{normalMax} {unit}
       </Text>
     </View>

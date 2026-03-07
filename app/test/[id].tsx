@@ -138,7 +138,7 @@ function SurveyCard({ questions, onComplete }: SurveyCardProps) {
         <Text style={{ fontSize: 18, marginRight: 8 }}>🩺</Text>
         <Text style={{ fontSize: 14, fontWeight: '700', color: COLORS.primary }}>A few quick questions</Text>
       </View>
-      <Text style={{ fontSize: 12, color: '#6B7280', marginBottom: 16 }}>
+      <Text style={{ fontSize: 12, color: '#4B5563', marginBottom: 16 }}>
         Question {step + 1} of {questions.length}
       </Text>
 
@@ -179,7 +179,7 @@ function SurveyCard({ questions, onComplete }: SurveyCardProps) {
                 backgroundColor: selected ? '#EDE9FE' : COLORS.surface,
               }}
             >
-              <Text style={{ fontSize: 13, fontWeight: '600', color: selected ? COLORS.primary : '#6B7280' }}>
+              <Text style={{ fontSize: 13, fontWeight: '600', color: selected ? COLORS.primary : '#4B5563' }}>
                 {option}
               </Text>
             </TouchableOpacity>
@@ -191,7 +191,7 @@ function SurveyCard({ questions, onComplete }: SurveyCardProps) {
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         {step > 0 ? (
           <TouchableOpacity onPress={() => setStep(s => s - 1)} activeOpacity={0.75}>
-            <Text style={{ fontSize: 13, color: '#9CA3AF', fontWeight: '600' }}>← Back</Text>
+            <Text style={{ fontSize: 13, color: '#6B7280', fontWeight: '600' }}>← Back</Text>
           </TouchableOpacity>
         ) : (
           <View />
@@ -233,7 +233,7 @@ export default function TestDetailScreen() {
   if (!test) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.surface, alignItems: 'center', justifyContent: 'center' }}>
-        <Text style={{ color: '#6B7280' }}>Test not found.</Text>
+        <Text style={{ color: '#4B5563' }}>Test not found.</Text>
         <TouchableOpacity onPress={() => router.back()} style={{ marginTop: 16 }}>
           <Text style={{ color: COLORS.primary, fontWeight: '600' }}>Go Back</Text>
         </TouchableOpacity>
@@ -291,7 +291,7 @@ export default function TestDetailScreen() {
         </TouchableOpacity>
         <View style={{ flex: 1 }}>
           <Text style={{ fontSize: 16, fontWeight: '700', color: '#111827' }}>{label} Test</Text>
-          <Text style={{ fontSize: 12, color: '#6B7280' }}>{formattedDate}</Text>
+          <Text style={{ fontSize: 12, color: '#4B5563' }}>{formattedDate}</Text>
         </View>
         {flaggedCount > 0 && (
           <View style={{ backgroundColor: COLORS.danger, borderRadius: 9999, paddingHorizontal: 8, paddingVertical: 3 }}>
@@ -324,7 +324,7 @@ export default function TestDetailScreen() {
             }}
           >
             <ActivityIndicator color={COLORS.primary} style={{ marginBottom: 12 }} />
-            <Text style={{ fontSize: 14, color: '#6B7280', fontWeight: '600' }}>Generating your overview...</Text>
+            <Text style={{ fontSize: 14, color: '#4B5563', fontWeight: '600' }}>Generating your overview...</Text>
             {streamingText.length > 0 && (
               <Text style={{ fontSize: 13, color: '#374151', lineHeight: 20, marginTop: 12, textAlign: 'left', width: '100%' }}>
                 {streamingText}
@@ -351,7 +351,7 @@ export default function TestDetailScreen() {
             </View>
             <Text style={{ fontSize: 13, color: '#374151', lineHeight: 20 }}>{displayText}</Text>
             <TouchableOpacity onPress={handleRegenerate} style={{ marginTop: 12 }}>
-              <Text style={{ fontSize: 12, color: '#9CA3AF' }}>Regenerate</Text>
+              <Text style={{ fontSize: 12, color: '#6B7280' }}>Regenerate</Text>
             </TouchableOpacity>
           </View>
         )}

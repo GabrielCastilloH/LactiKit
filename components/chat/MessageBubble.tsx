@@ -22,7 +22,7 @@ export function MessageBubble({ message }: Props) {
           {message.content}
         </Text>
       </View>
-      <Text className="text-xs text-gray-400 mt-1 mx-1">
+      <Text className="text-xs text-gray-600 mt-1 mx-1">
         {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
       </Text>
     </Animated.View>

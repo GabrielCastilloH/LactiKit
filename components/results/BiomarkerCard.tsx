@@ -38,11 +38,11 @@ export function BiomarkerCard({ biomarker }: Props) {
 
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
           <View>
-            <Text style={{ fontSize: 11, color: '#6B7280', marginBottom: 2 }}>Detected</Text>
+            <Text style={{ fontSize: 11, color: '#4B5563', marginBottom: 2 }}>Detected</Text>
             <Text style={{ fontSize: 13, fontWeight: '600', color: '#111827' }}>{detected} {unit}</Text>
           </View>
           <View style={{ alignItems: 'flex-end' }}>
-            <Text style={{ fontSize: 11, color: '#6B7280', marginBottom: 2 }}>Normal Range</Text>
+            <Text style={{ fontSize: 11, color: '#4B5563', marginBottom: 2 }}>Normal Range</Text>
             <Text style={{ fontSize: 13, fontWeight: '600', color: '#111827' }}>{normalMin}–{normalMax} {unit}</Text>
           </View>
         </View>

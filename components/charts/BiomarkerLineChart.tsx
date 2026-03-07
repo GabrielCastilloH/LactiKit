@@ -19,7 +19,7 @@ export function BiomarkerLineChart({ tests, biomarkerName }: Props) {
   if (points.length < 2) {
     return (
       <View style={{ height: 80, alignItems: 'center', justifyContent: 'center' }}>
-        <Text style={{ color: '#9CA3AF', fontSize: 12 }}>Not enough data for trend</Text>
+        <Text style={{ color: '#6B7280', fontSize: 12 }}>Not enough data for trend</Text>
       </View>
     );
   }
@@ -41,7 +41,7 @@ export function BiomarkerLineChart({ tests, biomarkerName }: Props) {
     <View>
       <Text style={{ fontSize: 14, fontWeight: '600', color: '#4B5563', marginBottom: 10, letterSpacing: 0.3 }}>
         {points[0]!.displayName}
-        <Text style={{ fontSize: 12, fontWeight: '400', color: '#9CA3AF' }}>  {points[0]!.unit}</Text>
+        <Text style={{ fontSize: 12, fontWeight: '400', color: '#6B7280' }}>  {points[0]!.unit}</Text>
       </Text>
       <LineChart
         data={chartData}
@@ -61,8 +61,8 @@ export function BiomarkerLineChart({ tests, biomarkerName }: Props) {
         dataPointsColor={COLORS.primary}
         dataPointsRadius={5}
         yAxisLabelWidth={32}
-        yAxisTextStyle={{ color: '#9CA3AF', fontSize: 11 }}
-        xAxisLabelTextStyle={{ color: '#9CA3AF', fontSize: 12, fontWeight: '500' }}
+        yAxisTextStyle={{ color: '#6B7280', fontSize: 11 }}
+        xAxisLabelTextStyle={{ color: '#6B7280', fontSize: 12, fontWeight: '500' }}
         rulesColor="#EDE9FE"
         rulesType="solid"
         noOfSections={3}
@@ -77,7 +77,7 @@ export function BiomarkerLineChart({ tests, biomarkerName }: Props) {
       />
       <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4, gap: 6 }}>
         <View style={{ width: 16, height: 2, backgroundColor: '#22C55E', borderRadius: 1 }} />
-        <Text style={{ fontSize: 11, color: '#9CA3AF' }}>Normal range</Text>
+        <Text style={{ fontSize: 11, color: '#6B7280' }}>Normal range</Text>
       </View>
     </View>
   );

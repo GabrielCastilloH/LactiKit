@@ -68,7 +68,7 @@ export default function ChatScreen() {
 
       {chatPhase === 'recipe' && (
         <View style={{ marginTop: 16, marginBottom: 8 }}>
-          <Text style={{ fontSize: 13, fontWeight: '600', color: '#6B7280', marginBottom: 12, paddingHorizontal: 4 }}>
+          <Text style={{ fontSize: 13, fontWeight: '600', color: '#4B5563', marginBottom: 12, paddingHorizontal: 4 }}>
             Recommended for You
           </Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -87,7 +87,7 @@ export default function ChatScreen() {
               >
                 <Text style={{ fontSize: 36, marginBottom: 8 }}>{recipe.emoji}</Text>
                 <Text style={{ fontWeight: '700', color: '#111827', fontSize: 13, marginBottom: 4 }}>{recipe.name}</Text>
-                <Text style={{ color: '#6B7280', fontSize: 12, lineHeight: 18 }}>{recipe.description}</Text>
+                <Text style={{ color: '#4B5563', fontSize: 12, lineHeight: 18 }}>{recipe.description}</Text>
               </View>
             ))}
           </ScrollView>
@@ -109,7 +109,7 @@ export default function ChatScreen() {
           <Text style={{ fontWeight: '700', fontSize: 15, color: COLORS.danger, marginBottom: 4 }}>
             ⚕ Clinical Referral Recommended
           </Text>
-          <Text style={{ color: '#6B7280', fontSize: 13, marginBottom: 12 }}>
+          <Text style={{ color: '#4B5563', fontSize: 13, marginBottom: 12 }}>
             Nurse Maya recommends consulting a healthcare provider
           </Text>
           {clinicalSummary.length > 0 && (
@@ -157,7 +157,7 @@ export default function ChatScreen() {
           </View>
           <View style={{ flex: 1 }}>
             <Text style={{ fontWeight: '700', fontSize: 15, color: COLORS.primary }}>Nurse Maya</Text>
-            <Text style={{ fontSize: 11, color: '#6B7280' }}>AI Maternal Health Nurse</Text>
+            <Text style={{ fontSize: 11, color: '#4B5563' }}>AI Maternal Health Nurse</Text>
           </View>
           <TouchableOpacity onPress={clearChat} hitSlop={8}>
             <Text style={{ fontSize: 12, fontWeight: '600', color: COLORS.primary }}>Clear</Text>

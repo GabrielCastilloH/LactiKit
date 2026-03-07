@@ -21,7 +21,7 @@ export function BiomarkerTrendChart({ biomarkerName, displayName, unit, tests, c
   if (relevant.length < 2) {
     return (
       <View style={{ height: 60, alignItems: 'center', justifyContent: 'center' }}>
-        <Text style={{ color: '#9CA3AF', fontSize: 12 }}>Not enough data — run more tests</Text>
+        <Text style={{ color: '#6B7280', fontSize: 12 }}>Not enough data — run more tests</Text>
       </View>
     );
   }
@@ -48,7 +48,7 @@ export function BiomarkerTrendChart({ biomarkerName, displayName, unit, tests, c
   const lowerIsBetter = ['protein', 'ketones', 'alcohol', 'specific_gravity'].includes(biomarkerName);
   const deltaGood = lowerIsBetter ? delta <= 0 : delta >= 0;
   const deltaNeutral = delta === 0;
-  const deltaColor = deltaNeutral ? '#9CA3AF' : deltaGood ? '#0D9488' : COLORS.danger;
+  const deltaColor = deltaNeutral ? '#6B7280' : deltaGood ? '#0D9488' : COLORS.danger;
 
   const levelColor = latest.level === 'normal' ? '#0D9488' : latest.level === 'high' ? COLORS.danger : COLORS.warning;
 
@@ -70,7 +70,7 @@ export function BiomarkerTrendChart({ biomarkerName, displayName, unit, tests, c
           <Text style={{ fontSize: 14, fontWeight: '700', color: '#111827', marginBottom: 2 }}>
             {displayName}
           </Text>
-          <Text style={{ fontSize: 12, color: '#9CA3AF' }}>
+          <Text style={{ fontSize: 12, color: '#6B7280' }}>
             Normal: {latest.normalMin}–{latest.normalMax} {unit}
           </Text>
         </View>
@@ -92,7 +92,7 @@ export function BiomarkerTrendChart({ biomarkerName, displayName, unit, tests, c
             <Text style={{ fontSize: 22, fontWeight: '800', color: levelColor }}>
               {latest.value}
             </Text>
-            <Text style={{ fontSize: 12, fontWeight: '400', color: '#9CA3AF' }}>{unit}</Text>
+            <Text style={{ fontSize: 12, fontWeight: '400', color: '#6B7280' }}>{unit}</Text>
           </View>
         </View>
       </View>
@@ -117,8 +117,8 @@ export function BiomarkerTrendChart({ biomarkerName, displayName, unit, tests, c
           dataPointsRadius={5}
           dataPointsColor={COLORS.primary}
           yAxisLabelWidth={36}
-          yAxisTextStyle={{ color: '#9CA3AF', fontSize: 10 }}
-          xAxisLabelTextStyle={{ color: '#9CA3AF', fontSize: 10 }}
+          yAxisTextStyle={{ color: '#6B7280', fontSize: 10 }}
+          xAxisLabelTextStyle={{ color: '#6B7280', fontSize: 10 }}
           rulesColor="#EDE9FE"
           rulesType="solid"
           noOfSections={3}
@@ -138,8 +138,8 @@ export function BiomarkerTrendChart({ biomarkerName, displayName, unit, tests, c
           isAnimated
           animationDuration={800}
           yAxisLabelWidth={36}
-          yAxisTextStyle={{ color: '#9CA3AF', fontSize: 10 }}
-          xAxisLabelTextStyle={{ color: '#9CA3AF', fontSize: 10 }}
+          yAxisTextStyle={{ color: '#6B7280', fontSize: 10 }}
+          xAxisLabelTextStyle={{ color: '#6B7280', fontSize: 10 }}
           rulesColor="#EDE9FE"
           noOfSections={3}
           maxValue={maxVal}

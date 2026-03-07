@@ -101,7 +101,7 @@ export default function ScanScreen() {
         <Text style={{ fontSize: 18, fontWeight: '600', textAlign: 'center', marginBottom: 8, color: '#1F2937' }}>
           Camera access needed
         </Text>
-        <Text style={{ fontSize: 14, textAlign: 'center', marginBottom: 24, paddingHorizontal: 32, color: '#6B7280' }}>
+        <Text style={{ fontSize: 14, textAlign: 'center', marginBottom: 24, paddingHorizontal: 32, color: '#4B5563' }}>
           LactiKit needs camera access to scan your test strip.
         </Text>
         <TouchableOpacity

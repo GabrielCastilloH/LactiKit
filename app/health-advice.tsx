@@ -167,7 +167,7 @@ export default function HealthAdviceScreen() {
         </View>
 
         {/* Action items */}
-        <Text style={{ fontSize: 12, fontWeight: '600', color: '#6B7280', marginBottom: 10, textTransform: 'uppercase', letterSpacing: 0.8 }}>
+        <Text style={{ fontSize: 12, fontWeight: '600', color: '#4B5563', marginBottom: 10, textTransform: 'uppercase', letterSpacing: 0.8 }}>
           Action Items
         </Text>
         <View
@@ -218,7 +218,7 @@ export default function HealthAdviceScreen() {
         {/* Seek help warning */}
         {advice.seekHelp && (
           <>
-            <Text style={{ fontSize: 12, fontWeight: '600', color: '#6B7280', marginBottom: 10, textTransform: 'uppercase', letterSpacing: 0.8 }}>
+            <Text style={{ fontSize: 12, fontWeight: '600', color: '#4B5563', marginBottom: 10, textTransform: 'uppercase', letterSpacing: 0.8 }}>
               When to Seek Help
             </Text>
             <View

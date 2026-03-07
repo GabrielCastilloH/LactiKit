@@ -75,7 +75,7 @@ export function CircleGraph({ percent, label, color, size = 100 }: Props) {
           </>
         )}
       </View>
-      <Text style={{ fontSize: 12, color: '#6B7280', marginTop: 6, fontWeight: '500' }}>
+      <Text style={{ fontSize: 12, color: '#4B5563', marginTop: 6, fontWeight: '500' }}>
         {label}
       </Text>
     </View>

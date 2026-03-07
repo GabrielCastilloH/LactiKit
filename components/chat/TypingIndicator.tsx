@@ -54,7 +54,7 @@ export function TypingIndicator() {
         className="rounded-2xl px-4 py-3 flex-row items-center"
         style={{ minHeight: 44, backgroundColor: COLORS.surface, borderWidth: 1, borderColor: COLORS.border }}
       >
-        <Text className="text-gray-500 text-sm mr-2">Nurse Maya</Text>
+        <Text className="text-gray-600 text-sm mr-2">Nurse Maya</Text>
         <View className="flex-row items-center">
           <Dot delay={0} />
           <Dot delay={150} />

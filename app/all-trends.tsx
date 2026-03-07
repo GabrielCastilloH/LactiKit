@@ -79,7 +79,7 @@ export default function AllTrendsScreen() {
               marginTop: 24,
             }}
           >
-            <Text style={{ fontSize: 14, color: '#6B7280', textAlign: 'center' }}>
+            <Text style={{ fontSize: 14, color: '#4B5563', textAlign: 'center' }}>
               No test data yet. Run your first test to see biomarker trends.
             </Text>
           </View>

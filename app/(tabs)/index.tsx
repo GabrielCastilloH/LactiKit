@@ -69,7 +69,7 @@ export default function HomeScreen() {
             >
               LactiKit
             </Text>
-            <Text style={{ fontSize: 12, color: "#9CA3AF", marginTop: 2 }}>
+            <Text style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>
               Baby & Maternal Health Tracker
             </Text>
           </View>
@@ -175,7 +175,7 @@ export default function HomeScreen() {
                 <Text
                   style={{
                     fontSize: 14,
-                    color: "#6B7280",
+                    color: "#4B5563",
                     textAlign: "center",
                     lineHeight: 22,
                   }}
@@ -289,7 +289,7 @@ export default function HomeScreen() {
             style={{
               fontSize: 12,
               fontWeight: "600",
-              color: "#6B7280",
+              color: "#4B5563",
               textTransform: "uppercase",
               letterSpacing: 0.8,
             }}
@@ -385,14 +385,14 @@ export default function HomeScreen() {
               style={{
                 fontSize: 13,
                 fontWeight: "600",
-                color: "#6B7280",
+                color: "#4B5563",
                 marginBottom: 4,
               }}
             >
               No tests yet
             </Text>
             <Text
-              style={{ fontSize: 12, color: "#9CA3AF", textAlign: "center" }}
+              style={{ fontSize: 12, color: "#6B7280", textAlign: "center" }}
             >
               Tap the scan button below to run your first test
             </Text>
@@ -442,7 +442,7 @@ export default function HomeScreen() {
                   >
                     {TEST_TYPE_LABELS[test.testType]}
                   </Text>
-                  <Text style={{ fontSize: 12, color: "#9CA3AF" }}>{date}</Text>
+                  <Text style={{ fontSize: 12, color: "#6B7280" }}>{date}</Text>
                 </View>
                 <View
                   style={{ flexDirection: "row", alignItems: "center", gap: 8 }}

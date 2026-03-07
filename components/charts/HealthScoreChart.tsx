@@ -19,7 +19,7 @@ export function HealthScoreChart({ tests }: Props) {
   if (tests.length < 2) {
     return (
       <View style={{ height: 80, alignItems: 'center', justifyContent: 'center' }}>
-        <Text style={{ color: '#9CA3AF', fontSize: 12 }}>Run more tests to see your trend</Text>
+        <Text style={{ color: '#6B7280', fontSize: 12 }}>Run more tests to see your trend</Text>
       </View>
     );
   }
@@ -61,19 +61,19 @@ export function HealthScoreChart({ tests }: Props) {
   const prevMom = momActualPoints.length >= 2 ? momActualPoints[momActualPoints.length - 2].value : latestMom;
   const momDelta = latestMom - prevMom;
   const momDeltaText = momDelta > 0 ? `+${momDelta}%` : momDelta < 0 ? `${momDelta}%` : '—';
-  const momDeltaColor = momDelta > 0 ? '#7BAAA3' : momDelta < 0 ? COLORS.danger : '#9CA3AF';
+  const momDeltaColor = momDelta > 0 ? '#7BAAA3' : momDelta < 0 ? COLORS.danger : '#6B7280';
 
   const babyActualPoints = babyData.filter(p => !p.hideDataPoint);
   const prevBaby = babyActualPoints.length >= 2 ? babyActualPoints[babyActualPoints.length - 2].value : latestBaby;
   const babyDelta = latestBaby - prevBaby;
   const babyDeltaText = babyDelta > 0 ? `+${babyDelta}%` : babyDelta < 0 ? `${babyDelta}%` : '—';
-  const babyDeltaColor = babyDelta > 0 ? '#7BAAA3' : babyDelta < 0 ? COLORS.danger : '#9CA3AF';
+  const babyDeltaColor = babyDelta > 0 ? '#7BAAA3' : babyDelta < 0 ? COLORS.danger : '#6B7280';
 
   return (
     <View>
       <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4, gap: 8 }}>
         <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: 11, color: '#9CA3AF', marginBottom: 1 }}>Mom</Text>
+          <Text style={{ fontSize: 11, color: '#6B7280', marginBottom: 1 }}>Mom</Text>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
             <Text style={{ fontSize: 20, fontWeight: '800', color: COLORS.primary }}>{latestMom}%</Text>
             <Text style={{ fontSize: 12, fontWeight: '600', color: momDeltaColor }}>{momDeltaText}</Text>
@@ -81,7 +81,7 @@ export function HealthScoreChart({ tests }: Props) {
         </View>
         <View style={{ width: 1, height: 32, backgroundColor: COLORS.border }} />
         <View style={{ flex: 1, alignItems: 'flex-end' }}>
-          <Text style={{ fontSize: 11, color: '#9CA3AF', marginBottom: 1 }}>Baby</Text>
+          <Text style={{ fontSize: 11, color: '#6B7280', marginBottom: 1 }}>Baby</Text>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
             <Text style={{ fontSize: 12, fontWeight: '600', color: babyDeltaColor }}>{babyDeltaText}</Text>
             <Text style={{ fontSize: 20, fontWeight: '800', color: BABY_COLOR }}>{latestBaby}%</Text>
@@ -110,8 +110,8 @@ export function HealthScoreChart({ tests }: Props) {
         dataPointsColor={COLORS.primary}
         dataPointsColor2={BABY_COLOR}
         yAxisLabelWidth={32}
-        yAxisTextStyle={{ color: '#9CA3AF', fontSize: 11 }}
-        xAxisLabelTextStyle={{ color: '#9CA3AF', fontSize: 11 }}
+        yAxisTextStyle={{ color: '#6B7280', fontSize: 11 }}
+        xAxisLabelTextStyle={{ color: '#6B7280', fontSize: 11 }}
         rulesColor="#EDE9FE"
         rulesType="solid"
         noOfSections={4}
@@ -121,11 +121,11 @@ export function HealthScoreChart({ tests }: Props) {
       <View style={{ flexDirection: 'row', gap: 14, marginTop: 6, justifyContent: 'center' }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
           <View style={{ width: 14, height: 2, backgroundColor: COLORS.primary, borderRadius: 2 }} />
-          <Text style={{ fontSize: 11, color: '#6B7280', fontWeight: '500' }}>Mom's health</Text>
+          <Text style={{ fontSize: 11, color: '#4B5563', fontWeight: '500' }}>Mom's health</Text>
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
           <View style={{ width: 14, height: 2, backgroundColor: BABY_COLOR, borderRadius: 2 }} />
-          <Text style={{ fontSize: 11, color: '#6B7280', fontWeight: '500' }}>Baby's health</Text>
+          <Text style={{ fontSize: 11, color: '#4B5563', fontWeight: '500' }}>Baby's health</Text>
         </View>
       </View>
     </View>
