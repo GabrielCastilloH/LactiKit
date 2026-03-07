@@ -25,15 +25,25 @@ export async function streamChatCompletion(
 
   const lastMessage = messages[messages.length - 1];
 
+  console.log('[gemini] startChat history length:', history.length, history.map(m => m.role));
+  console.log('[gemini] sending message:', lastMessage.content.slice(0, 80));
+
   const chat = model.startChat({ history });
 
-  const result = await chat.sendMessageStream(lastMessage.content);
+  // Hermes (React Native) lacks Web Streams (pipeThrough), so we use the non-streaming API
+  // and simulate streaming by drip-feeding the response word by word.
+  const result = await chat.sendMessage(lastMessage.content);
+  const fullText = result.response.text();
 
-  let fullText = '';
-  for await (const chunk of result.stream) {
-    const chunkText = chunk.text();
-    fullText += chunkText;
-    onChunk(chunkText);
+  console.log('[gemini] response complete, length:', fullText.length);
+
+  // Simulate streaming — emit ~4 words at a time with a small delay
+  const words = fullText.split(' ');
+  const chunkSize = 4;
+  for (let i = 0; i < words.length; i += chunkSize) {
+    const piece = words.slice(i, i + chunkSize).join(' ') + (i + chunkSize < words.length ? ' ' : '');
+    onChunk(piece);
+    await new Promise(res => setTimeout(res, 30));
   }
 
   return fullText;
@@ -64,12 +74,17 @@ ${surveyLines}
 
 Write a 3–4 sentence personalized health overview for this user. Be warm, specific to their results and diet, and give one actionable tip. Do not recommend specific medications.`;
 
-  const result = await model.generateContentStream(prompt);
-  let fullText = '';
-  for await (const chunk of result.stream) {
-    const chunkText = chunk.text();
-    fullText += chunkText;
-    onChunk(chunkText);
+  // Hermes lacks Web Streams — use non-streaming API and simulate word-by-word reveal
+  const result = await model.generateContent(prompt);
+  const fullText = result.response.text();
+
+  const words = fullText.split(' ');
+  const chunkSize = 4;
+  for (let i = 0; i < words.length; i += chunkSize) {
+    const piece = words.slice(i, i + chunkSize).join(' ') + (i + chunkSize < words.length ? ' ' : '');
+    onChunk(piece);
+    await new Promise(res => setTimeout(res, 30));
   }
+
   return fullText;
 }

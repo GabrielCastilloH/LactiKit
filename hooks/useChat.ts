@@ -101,6 +101,7 @@ export function useChat(testContext: TestResult | null = null) {
         }
       }
     } catch (error) {
+      console.error('[useChat] streamChatCompletion failed:', error);
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
