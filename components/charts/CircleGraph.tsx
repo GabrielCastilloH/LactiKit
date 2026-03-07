@@ -13,7 +13,7 @@ export function CircleGraph({ percent, label, color, size = 100 }: Props) {
   const clamped = Math.max(0, Math.min(100, percent));
   const data = [
     { value: clamped, color },
-    { value: 100 - clamped, color: '#EDE0D4' },
+    { value: 100 - clamped, color: '#EDE8E3' },
   ];
 
   return (
@@ -24,7 +24,7 @@ export function CircleGraph({ percent, label, color, size = 100 }: Props) {
         radius={size / 2}
         innerRadius={size / 2 - 14}
         centerLabelComponent={() => (
-          <View style={{ alignItems: 'center' }}>
+          <View style={{ alignItems: 'center', backgroundColor: '#FDF6EE', width: size - 28, height: size - 28, borderRadius: (size - 28) / 2, justifyContent: 'center' }}>
             <Text style={{ fontSize: 16, fontWeight: '700', color: '#111827' }}>
               {clamped}%
             </Text>
