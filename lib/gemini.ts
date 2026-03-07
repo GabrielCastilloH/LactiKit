@@ -14,10 +14,14 @@ export async function streamChatCompletion(
     systemInstruction: systemPrompt,
   });
 
-  const history = messages.slice(0, -1).map((msg) => ({
+  const allHistory = messages.slice(0, -1).map((msg) => ({
     role: msg.role === 'assistant' ? 'model' : 'user',
     parts: [{ text: msg.content }],
   }));
+  // Gemini requires history to start with a 'user' turn — drop any leading model messages
+  // (the initial Maya greeting lives in the system prompt context anyway)
+  const firstUserIdx = allHistory.findIndex((m) => m.role === 'user');
+  const history = firstUserIdx >= 0 ? allHistory.slice(firstUserIdx) : [];
 
   const lastMessage = messages[messages.length - 1];
 

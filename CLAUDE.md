@@ -9,7 +9,7 @@ LactiKit: React Native (Expo) hackathon MVP for baby and maternal health trackin
 - expo-camera for scan screen
 - react-native-reanimated for animations
 - react-native-gifted-charts for charts (donut, line, bar)
-- @google/generative-ai for Gemini API (model: gemini-2.0-flash)
+- @google/generative-ai for Gemini API (model: gemini-2.5-flash-lite)
 - No backend — API key in .env as EXPO_PUBLIC_GEMINI_API_KEY
 
 ## App Flow
@@ -36,7 +36,7 @@ context/          # ScanHistoryContext.tsx (TestHistoryContext, useTestHistory)
 - All screens use `router.push()` / `router.replace()` from expo-router
 - Shared types live in `types/index.ts` — import from there, never redefine
 - Shared constants (colors, fake test data, timing) live in `lib/constants.ts`
-- Gemini model: `gemini-2.0-flash` (fast for demos)
+- Gemini model: `gemini-2.5-flash-lite` (fast for demos)
 - API key accessed via `process.env.EXPO_PUBLIC_GEMINI_API_KEY`
 
 ## Color Palette
