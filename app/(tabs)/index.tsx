@@ -5,8 +5,7 @@ import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { router } from "expo-router";
 import { COLORS, TEST_TYPE_LABELS } from "../../lib/constants";
 import { useTestHistory } from "../../context/ScanHistoryContext";
-import { CircleGraph } from "../../components/charts/CircleGraph";
-import { HealthScoreChart } from "../../components/charts/HealthScoreChart";
+import { BiomarkerTrendChart } from "../../components/charts/BiomarkerTrendChart";
 import { Ionicons } from "@expo/vector-icons";
 import { TestResult } from "../../types";
 
@@ -20,169 +19,6 @@ function getAlertText(test: TestResult | null): string {
   const action =
     "Make sure you're drinking enough water and eating a balanced diet.";
   return `Your latest ${TEST_TYPE_LABELS[test.testType]} test flagged: ${names}. ${action}`;
-}
-
-function getHealthScore(test: TestResult | null): number {
-  if (!test) return 0;
-  const normal = test.biomarkers.filter((b) => b.level === "normal").length;
-  return Math.round((normal / test.biomarkers.length) * 100);
-}
-
-interface DetailedAdvice {
-  summary: string;
-  actionItems: string[];
-  seekHelp: string | null;
-}
-
-function getDetailedAdvice(test: TestResult | null): DetailedAdvice {
-  if (!test) {
-    return {
-      summary:
-        "No test results yet. Run your first test to get personalized health advice.",
-      actionItems: [
-        "Use the scan button below to run your first at-home test.",
-        "Make sure your test strip is placed correctly before scanning.",
-        "Test results are analyzed in seconds.",
-      ],
-      seekHelp: null,
-    };
-  }
-
-  const flagged = test.biomarkers.filter((b) => b.level !== "normal");
-
-  if (flagged.length === 0) {
-    return {
-      summary:
-        "All markers from your latest test are within normal range. Great work keeping up with your health!",
-      actionItems: [
-        "Continue drinking 8–10 cups of water daily.",
-        "Maintain a balanced diet rich in whole foods, fruits, and vegetables.",
-        "Keep up regular testing to track your wellness over time.",
-        "Get adequate rest — aim for 7–9 hours of sleep per night.",
-      ],
-      seekHelp: null,
-    };
-  }
-
-  const items: string[] = [];
-  let seekHelp: string | null = null;
-
-  if (test.testType === "mom_urine") {
-    if (flagged.some((b) => b.name === "specific_gravity")) {
-      items.push(
-        "Increase fluid intake — aim for at least 10 cups of water daily.",
-      );
-      items.push("Limit caffeine and sugary drinks which can dehydrate you.");
-    }
-    if (flagged.some((b) => b.name === "ketones")) {
-      items.push("Eat regular, balanced meals — avoid skipping breakfast.");
-      items.push(
-        "Include complex carbohydrates like oats, sweet potato, and whole grains.",
-      );
-      items.push(
-        "Consult your doctor if ketones remain elevated, especially if breastfeeding.",
-      );
-    }
-    if (flagged.some((b) => b.name === "vitamin_c")) {
-      items.push(
-        "Add more citrus fruits (oranges, kiwi, strawberries) to your diet.",
-      );
-      items.push(
-        "Include bell peppers and broccoli — excellent sources of Vitamin C.",
-      );
-      items.push(
-        "Consider a Vitamin C supplement after consulting your doctor.",
-      );
-    }
-    if (flagged.some((b) => b.name === "protein")) {
-      items.push(
-        "Elevated urine protein can indicate kidney stress or dehydration.",
-      );
-      items.push(
-        "Drink more water and monitor for swelling, headaches, or blurred vision.",
-      );
-      seekHelp =
-        "Persistent elevated protein in urine postpartum may indicate late-onset preeclampsia. Contact your healthcare provider promptly.";
-    }
-    if (flagged.some((b) => b.name === "calcium_magnesium")) {
-      items.push(
-        "Eat more dairy, leafy greens, almonds, and fortified plant milks.",
-      );
-      items.push(
-        "Consider a calcium + magnesium supplement after consulting your doctor.",
-      );
-    }
-    if (flagged.some((b) => b.name === "ph_level")) {
-      items.push("Stay well hydrated to help maintain healthy urine pH.");
-      items.push(
-        "A very alkaline or acidic result can reflect diet or early infection — monitor closely.",
-      );
-    }
-  } else if (test.testType === "breastmilk") {
-    if (flagged.some((b) => b.name === "alcohol")) {
-      items.push(
-        "Wait at least 2–3 hours per drink consumed before breastfeeding.",
-      );
-      items.push(
-        "Consider pumping and discarding milk after alcohol consumption.",
-      );
-      seekHelp =
-        "Any detectable alcohol in breastmilk can affect your baby's development. Consult your healthcare provider if this persists.";
-    }
-    if (flagged.some((b) => b.name === "ph_level")) {
-      items.push(
-        "An elevated breastmilk pH can be an early sign of mastitis — watch for breast redness, warmth, or pain.",
-      );
-      items.push(
-        "Stay well hydrated and continue breastfeeding frequently to prevent blockages.",
-      );
-      if (!seekHelp)
-        seekHelp =
-          "Abnormal breastmilk pH may indicate a breast infection. Contact your healthcare provider if you develop fever or breast pain.";
-    }
-    if (flagged.some((b) => b.name === "vitamin_c")) {
-      items.push(
-        "Increase Vitamin C intake: citrus fruits, kiwi, bell peppers, and strawberries.",
-      );
-      items.push(
-        "Your baby's Vitamin C supply depends directly on your diet — aim for 120mg/day while breastfeeding.",
-      );
-    }
-  } else if (test.testType === "baby_urine") {
-    if (flagged.some((b) => b.name === "specific_gravity")) {
-      items.push(
-        "Offer more frequent feeds — breast milk or formula as appropriate.",
-      );
-      items.push(
-        "Watch for signs of dehydration: sunken fontanelle, dry mouth, fewer wet diapers.",
-      );
-      seekHelp =
-        "High specific gravity in an infant can signal dehydration or inadequate feeding. Contact your pediatrician if feeding difficulties persist.";
-    }
-    if (flagged.some((b) => b.name === "ketones")) {
-      items.push(
-        "Ensure the baby is feeding frequently — at least 8–12 times per day for newborns.",
-      );
-      items.push(
-        "High ketones in an infant indicate a caloric deficit — check latch and milk transfer if breastfeeding.",
-      );
-      if (!seekHelp)
-        seekHelp =
-          "Elevated ketones in a baby may indicate inadequate caloric intake. Contact your pediatrician promptly.";
-    }
-  }
-
-  if (items.length === 0) {
-    items.push("Monitor your symptoms and retest in a few days.");
-    items.push("Stay hydrated and maintain a balanced diet.");
-  }
-
-  const names = flagged.map((b) => b.displayName).join(", ");
-  return {
-    summary: `Your latest ${TEST_TYPE_LABELS[test.testType]} test flagged: ${names}. Here's what you can do:`,
-    actionItems: items,
-    seekHelp,
-  };
 }
 
 const TEST_INTERVAL_DAYS = 7;
@@ -199,25 +35,10 @@ function getNextTestInfo(tests: TestResult[]): { daysUntil: number } | null {
   return { daysUntil: Math.max(0, TEST_INTERVAL_DAYS - daysSince) };
 }
 
-function getHydrationScore(test: TestResult | null): number {
-  if (!test) return 0;
-  const hydrationMarker = test.biomarkers.find(
-    (b) => b.name === "specific_gravity" || b.name === "ketones",
-  );
-  if (!hydrationMarker) return 72;
-  return hydrationMarker.level === "normal"
-    ? 85
-    : hydrationMarker.level === "high"
-      ? 45
-      : 62;
-}
-
 export default function HomeScreen() {
   const { tests } = useTestHistory();
   const latestTest = tests[0] ?? null;
   const alertText = getAlertText(latestTest);
-  const healthScore = getHealthScore(latestTest);
-  const hydrationScore = getHydrationScore(latestTest);
   const tabBarHeight = useBottomTabBarHeight();
   const nextTest = getNextTestInfo(tests);
   const [nextTestModalVisible, setNextTestModalVisible] = useState(false);
@@ -455,76 +276,87 @@ export default function HomeScreen() {
           </Text>
         </View>
 
-        {/* Graphs Row — Donut charts */}
-        <Text
+        {/* Biomarker Trends */}
+        <View
           style={{
-            fontSize: 15,
-            fontWeight: "700",
-            color: "#111827",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
             marginBottom: 14,
           }}
         >
-          Health Overview
-        </Text>
+          <Text
+            style={{
+              fontSize: 12,
+              fontWeight: "600",
+              color: "#6B7280",
+              textTransform: "uppercase",
+              letterSpacing: 0.8,
+            }}
+          >
+            Biomarker Trends
+          </Text>
+          <TouchableOpacity
+            onPress={() => router.push("/all-trends")}
+            activeOpacity={0.75}
+          >
+            <Text
+              style={{ fontSize: 12, fontWeight: "600", color: COLORS.primary }}
+            >
+              Show All →
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Vitamin C Trend */}
         <View
           style={{
-            backgroundColor: COLORS.background,
+            backgroundColor: COLORS.surface,
             borderRadius: 16,
-            padding: 20,
-            marginBottom: 20,
-            flexDirection: "row",
-            justifyContent: "space-around",
+            padding: 16,
+            marginBottom: 14,
             borderWidth: 1,
             borderColor: COLORS.border,
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.06,
+            shadowRadius: 8,
+            elevation: 2,
           }}
         >
-          <CircleGraph
-            percent={hydrationScore}
-            label="Hydration"
-            color="#7BAAA3"
-            size={90}
-          />
-          <View style={{ width: 1, backgroundColor: COLORS.border }} />
-          <CircleGraph
-            percent={healthScore}
-            label="Health Score"
-            color={COLORS.primary}
-            size={90}
+          <BiomarkerTrendChart
+            biomarkerName="vitamin_c"
+            displayName="Vitamin C"
+            unit="mg/dL"
+            tests={tests}
+            chartType="line"
           />
         </View>
 
-        {/* Line Chart — Health Score Trend */}
-        {tests.length >= 1 && (
-          <>
-            <Text
-              style={{
-                fontSize: 12,
-                fontWeight: "600",
-                color: "#6B7280",
-                marginBottom: 10,
-                textTransform: "uppercase",
-                letterSpacing: 0.8,
-              }}
-            >
-              Wellness Trend
-            </Text>
-            <View
-              style={{
-                backgroundColor: COLORS.surface,
-                borderRadius: 16,
-                padding: 16,
-                marginBottom: 20,
-                shadowColor: "#000",
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.06,
-                shadowRadius: 8,
-                elevation: 2,
-              }}
-            >
-              <HealthScoreChart tests={tests} />
-            </View>
-          </>
-        )}
+        {/* Protein Trend */}
+        <View
+          style={{
+            backgroundColor: COLORS.surface,
+            borderRadius: 16,
+            padding: 16,
+            marginBottom: 20,
+            borderWidth: 1,
+            borderColor: COLORS.border,
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.06,
+            shadowRadius: 8,
+            elevation: 2,
+          }}
+        >
+          <BiomarkerTrendChart
+            biomarkerName="protein"
+            displayName="Protein"
+            unit="mg/dL"
+            tests={tests}
+            chartType="line"
+          />
+        </View>
 
         {/* Past Tests */}
         <Text

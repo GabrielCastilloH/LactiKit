@@ -13,6 +13,7 @@ export default function RootLayout() {
             <Stack.Screen name="(tabs)" />
             <Stack.Screen name="test/[id]" />
             <Stack.Screen name="health-advice" />
+            <Stack.Screen name="all-trends" />
           </Stack>
         </ScanHistoryProvider>
       </SafeAreaProvider>
