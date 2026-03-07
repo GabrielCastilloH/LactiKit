@@ -8,7 +8,7 @@ type Props = {
 };
 
 function levelColor(level: Biomarker['level']): string {
-  if (level === 'normal') return '#22C55E';
+  if (level === 'normal') return '#0D9488';
   if (level === 'high') return COLORS.warning;
   return COLORS.danger;
 }
@@ -23,14 +23,11 @@ export function BiomarkerCard({ biomarker }: Props) {
       style={{
         backgroundColor: COLORS.surface,
         borderWidth: 1,
-        borderColor: COLORS.border,
+        borderColor: color + '40',
         borderRadius: 12,
-        flexDirection: 'row',
-        overflow: 'hidden',
         marginBottom: 12,
       }}
     >
-      <View style={{ width: 4, backgroundColor: color }} />
       <View style={{ flex: 1, padding: 14 }}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
           <Text style={{ fontSize: 15, fontWeight: '700', color: '#111827' }}>{displayName}</Text>

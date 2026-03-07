@@ -64,10 +64,10 @@ export default function HomeScreen() {
             borderRadius: 16,
             padding: 16,
             marginBottom: 20,
-            borderLeftWidth: 4,
-            borderLeftColor: latestTest && latestTest.biomarkers.some(b => b.level !== 'normal')
+            borderWidth: 1,
+            borderColor: (latestTest && latestTest.biomarkers.some(b => b.level !== 'normal')
               ? COLORS.warning
-              : '#22C55E',
+              : '#0D9488') + '40',
             shadowColor: '#000',
             shadowOffset: { width: 0, height: 2 },
             shadowOpacity: 0.06,
@@ -196,8 +196,8 @@ export default function HomeScreen() {
                       </Text>
                     </View>
                   ) : (
-                    <View style={{ backgroundColor: '#D1FAE5', borderRadius: 9999, paddingHorizontal: 8, paddingVertical: 3 }}>
-                      <Text style={{ fontSize: 11, fontWeight: '700', color: '#059669' }}>All normal</Text>
+                    <View style={{ backgroundColor: '#0D948822', borderRadius: 9999, paddingHorizontal: 8, paddingVertical: 3 }}>
+                      <Text style={{ fontSize: 11, fontWeight: '700', color: '#0D9488' }}>All normal</Text>
                     </View>
                   )}
                   <Ionicons name="chevron-forward" size={16} color="#D1D5DB" />

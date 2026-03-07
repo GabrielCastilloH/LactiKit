@@ -25,7 +25,7 @@ export function ChatInput({ onSend, disabled = false }: ChatInputProps) {
     >
       <TextInput
         className="flex-1 rounded-full px-4 py-3 text-base text-gray-800 mr-3"
-        style={{ backgroundColor: COLORS.tabBar }}
+        style={{ backgroundColor: COLORS.tabBar, textAlignVertical: 'center' }}
         placeholder="Ask Nurse Maya..."
         placeholderTextColor={COLORS.tabInactive}
         value={text}
