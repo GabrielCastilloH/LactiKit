@@ -12,7 +12,6 @@ export type ChatPhase = 'questioning' | 'recipe' | 'referral';
 export type TestType = 'mom_urine' | 'breastmilk' | 'baby_urine';
 
 export type BiomarkerName =
-  | 'leukocytes_nitrites'
   | 'specific_gravity'
   | 'ketones'
   | 'vitamin_c'

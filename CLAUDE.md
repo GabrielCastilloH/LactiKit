@@ -18,9 +18,9 @@ Home → Test Detail (biomarker bars + AI overview) → Chat (Nurse Maya, test-a
 Chat tab (no testId) → Maya gives generic greeting
 
 ## Test Types
-- `mom_urine`: Leukocytes/Nitrites, Specific Gravity, Ketones, Vitamin C
-- `breastmilk`: Protein, Calcium/Magnesium, pH Level
-- `baby_urine`: Specific Gravity, Alcohol, Leukocytes/Nitrites
+- `mom_urine`: Specific Gravity, Ketones, Vitamin C, Protein, Calcium/Magnesium, pH Level
+- `breastmilk`: Alcohol, pH Level, Vitamin C
+- `baby_urine`: Specific Gravity, Ketones
 
 ## Folder Structure
 ```
