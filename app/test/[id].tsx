@@ -351,7 +351,7 @@ export default function TestDetailScreen() {
             </View>
             <Text style={{ fontSize: 13, color: '#374151', lineHeight: 20 }}>{displayText}</Text>
             <TouchableOpacity onPress={handleRegenerate} style={{ marginTop: 12 }}>
-              <Text style={{ fontSize: 12, color: '#9CA3AF', textDecorationLine: 'underline' }}>Regenerate</Text>
+              <Text style={{ fontSize: 12, color: '#9CA3AF' }}>Regenerate</Text>
             </TouchableOpacity>
           </View>
         )}
