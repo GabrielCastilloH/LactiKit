@@ -12,14 +12,14 @@ const variantConfig: Record<
   { container: string; dot: string; text: string }
 > = {
   warning: {
+    container: 'bg-sky-50',
+    dot: 'bg-sky-400',
+    text: 'text-sky-700',
+  },
+  danger: {
     container: 'bg-amber-50',
     dot: 'bg-amber-400',
     text: 'text-amber-700',
-  },
-  danger: {
-    container: 'bg-red-50',
-    dot: 'bg-red-500',
-    text: 'text-red-700',
   },
   success: {
     container: 'bg-green-50',

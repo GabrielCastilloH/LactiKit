@@ -2,8 +2,8 @@ import { TestResult } from '../types';
 
 export const COLORS = {
   primary: '#8B6B8B',
-  warning: '#C9956A',
-  danger: '#B85C5C',
+  warning: '#3D84B5',
+  danger: '#C9956A',
   background: '#FDF6EE',
   surface: '#FFFAF5',
   tabBar: '#F5EDE3',
