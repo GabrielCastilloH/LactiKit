@@ -3,7 +3,6 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router, useFocusEffect } from 'expo-router';
-import { ScanOverlay } from '../../components/scan/ScanOverlay';
 import { AnalyzingModal } from '../../components/scan/AnalyzingModal';
 import { useAnalyzing } from '../../hooks/useAnalyzing';
 import { captureRef } from '../../utils/cameraCapture';
@@ -124,7 +123,6 @@ export default function ScanScreen() {
       }}
     >
       <CameraView style={{ flex: 1 }} facing="back" />
-      <ScanOverlay />
       <AnalyzingModal visible={isAnalyzing} />
     </View>
   );
