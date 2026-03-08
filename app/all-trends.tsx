@@ -1,9 +1,11 @@
 import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Share, Alert } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Alert, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS } from '../lib/constants';
+import * as Print from 'expo-print';
+import * as Sharing from 'expo-sharing';
+import { COLORS, TEST_TYPE_LABELS } from '../lib/constants';
 import { useTestHistory } from '../context/ScanHistoryContext';
 import { BiomarkerTrendChart } from '../components/charts/BiomarkerTrendChart';
 import { BiomarkerName, TestResult } from '../types';
@@ -20,33 +22,146 @@ const BIOMARKER_META: { name: BiomarkerName; displayName: string; unit: string }
   { name: 'alcohol', displayName: 'Alcohol', unit: 'mg/dL' },
 ];
 
-function csvCell(value: string | number): string {
-  const str = String(value);
-  // Wrap in quotes if it contains a comma, quote, or newline
-  if (/[,"\n]/.test(str)) return `"${str.replace(/"/g, '""')}"`;
-  return str;
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }
 
-function buildCSV(tests: TestResult[]): string {
-  const header = ['Date', 'Test Type', 'Biomarker', 'Value', 'Unit', 'Level', 'Normal Min', 'Normal Max'];
-  const rows: string[] = [header.map(csvCell).join(',')];
-  for (const test of tests) {
-    for (const b of test.biomarkers) {
-      rows.push(
-        [
-          test.date,
-          test.testType,
-          b.displayName,
-          b.detected,
-          b.unit,
-          b.level,
-          b.normalMin,
-          b.normalMax,
-        ].map(csvCell).join(',')
-      );
+function levelBadgeClass(level: string): string {
+  if (level === 'low') return 'badge-low';
+  if (level === 'high') return 'badge-high';
+  return 'badge-normal';
+}
+
+function buildPDFHtml(tests: TestResult[]): string {
+  const testTypeLabel = (type: string) => TEST_TYPE_LABELS[type] ?? type;
+  const rows = tests.flatMap(test =>
+    test.biomarkers.map(b => ({
+      date: test.date,
+      testType: testTypeLabel(test.testType),
+      biomarker: b.displayName,
+      value: b.detected,
+      unit: b.unit,
+      level: b.level,
+      normalMin: b.normalMin,
+      normalMax: b.normalMax,
+    }))
+  );
+
+  const rowHtml = rows
+    .map(
+      r => `
+    <tr>
+      <td>${escapeHtml(r.date)}</td>
+      <td>${escapeHtml(r.testType)}</td>
+      <td>${escapeHtml(r.biomarker)}</td>
+      <td>${r.value} ${escapeHtml(r.unit)}</td>
+      <td><span class="badge ${levelBadgeClass(r.level)}">${escapeHtml(r.level)}</span></td>
+      <td>${r.normalMin} – ${r.normalMax}</td>
+    </tr>`
+    )
+    .join('');
+
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    @page { margin: 24px; }
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      color: #374151;
+      line-height: 1.5;
+      margin: 0;
+      padding: 20px;
     }
-  }
-  return rows.join('\n');
+    .header {
+      text-align: center;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid ${COLORS.primary};
+    }
+    .header h1 {
+      font-size: 24px;
+      font-weight: 700;
+      color: ${COLORS.primary};
+      margin: 0 0 4px 0;
+    }
+    .header p {
+      font-size: 13px;
+      color: #6B7280;
+      margin: 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    th {
+      text-align: left;
+      padding: 10px 12px;
+      background: ${COLORS.primary};
+      color: white;
+      font-weight: 600;
+    }
+    th:first-child { border-radius: 6px 0 0 0; }
+    th:last-child { border-radius: 0 6px 0 0; }
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #E5E7EB;
+    }
+    tr:nth-child(even) { background: #F9FAFB; }
+    tr:hover { background: #F3F4F6; }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .badge-normal { background: #D1FAE5; color: #065F46; }
+    .badge-low { background: #FEF3C7; color: #92400E; }
+    .badge-high { background: #FEE2E2; color: #991B1B; }
+    .footer {
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid #E5E7EB;
+      font-size: 11px;
+      color: #9CA3AF;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>LactiKit Biomarker Report</h1>
+    <p>Exported on ${escapeHtml(new Date().toLocaleDateString())} • ${tests.length} test(s)</p>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Test Type</th>
+        <th>Biomarker</th>
+        <th>Value</th>
+        <th>Level</th>
+        <th>Normal Range</th>
+      </tr>
+    </thead>
+    <tbody>${rowHtml}
+    </tbody>
+  </table>
+  <div class="footer">
+    LactiKit — Maternal & baby health tracking. This report is for informational purposes only.
+  </div>
+</body>
+</html>`;
 }
 
 export default function AllTrendsScreen() {
@@ -62,14 +177,22 @@ export default function AllTrendsScreen() {
       Alert.alert('No data', 'Run a test first to export data.');
       return;
     }
-    const csv = buildCSV(tests);
     try {
-      await Share.share({
-        title: 'LactiKit Biomarker Data',
-        message: csv,
-      });
-    } catch {
-      Alert.alert('Export failed', 'Could not share data.');
+      const html = buildPDFHtml(tests);
+      const { uri } = await Print.printToFileAsync({ html });
+      const isAvailable = await Sharing.isAvailableAsync();
+      if (isAvailable) {
+        await Sharing.shareAsync(uri, {
+          mimeType: 'application/pdf',
+          dialogTitle: 'Export LactiKit Report',
+          ...(Platform.OS === 'ios' && { UTI: '.pdf' }),
+        });
+      } else {
+        Alert.alert('Export failed', 'Sharing is not available on this device.');
+      }
+    } catch (e) {
+      console.error('Export failed:', e);
+      Alert.alert('Export failed', 'Could not generate or share PDF.');
     }
   }
 
